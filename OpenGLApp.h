@@ -3,27 +3,34 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vector>
+
+#include "shader/shaderinit.h"
 
 class OpenGLApp
 {
 public:
-	OpenGLApp();
+	OpenGLApp() {};
+	OpenGLApp(unsigned int width, unsigned int height);
 	~OpenGLApp();
-
 	void run();
 
 private:
-	const unsigned int screenWidth;
-	const unsigned int screenHeight;
-	GLFWwindow* window;
+	unsigned int m_width{}, m_height{};
+	Shader m_shader{};
+	GLFWwindow* m_window{};
+	GLuint m_numVertices{}; // Number of vertices in the VBO
+	GLuint VAO{}, VBO{}, EBO{}; // OpenGL buffers
 
-	bool initializeGLFW();
-	bool createWindow();
-	bool initializeGLAD();
-	void processInput();
-	void mainLoop();
-	void cleanup();
+	void initializeGLFW();
+	void createWindow(unsigned int, unsigned int);
+	void initializeGLAD();
+	void initializeShader();
+	void init();
+	void gameLoop();
 	void render();
+	void transform(Shader);
+	void processInput(GLFWwindow*);
 };
 
 #endif // !OpenGLApp
