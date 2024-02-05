@@ -134,9 +134,10 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="OpenGLApp.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
   </ItemGroup>
