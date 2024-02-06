@@ -1,20 +1,22 @@
-#ifndef OPEN_GL_APP
-#define OPEN_GL_APP
+#ifndef APP
+#define APP
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "shader/shaderinit.h"
+#include "../Shader/shaderinit.h"
 
-class OpenGLApp
+class App
 {
 public:
-	OpenGLApp() {};
-	OpenGLApp(unsigned int width, unsigned int height);
-	~OpenGLApp();
+	App() {};
+	App(unsigned int, unsigned int, const char*, const char*);
+	~App();
 	void run();
 
 private:
+	const char* m_vertexShaderPath = nullptr;
+	const char* m_fragmentShaderPath = nullptr;
 	unsigned int m_width{}, m_height{};
 	Shader m_shader{};
 	GLFWwindow* m_window{};
@@ -24,7 +26,7 @@ private:
 	void initializeGLFW();
 	void createWindow(unsigned int, unsigned int);
 	void initializeGLAD();
-	void initializeShader();
+	void initializeShader(const char*, const char*);
 	void init();
 	void gameLoop();
 	void render();
@@ -32,4 +34,4 @@ private:
 	void processInput(GLFWwindow*);
 };
 
-#endif // !OpenGLApp
+#endif // !App

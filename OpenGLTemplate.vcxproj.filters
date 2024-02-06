@@ -15,27 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
+    <ClCompile Include="src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGLApp.cpp">
+    <ClCompile Include="src\App\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="shader.fs">
+    <None Include="src\Shader\shader.fs">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shader.vs">
+    <None Include="src\Shader\shader.vs">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGLApp.h">
+    <ClInclude Include="src\App\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

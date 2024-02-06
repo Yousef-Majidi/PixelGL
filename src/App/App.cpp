@@ -5,14 +5,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "OpenGLApp.h"
-#include "shader/shaderinit.h"
+#include "App.h"
+#include "../Shader/shaderinit.h"
+
+using std::string;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-OpenGLApp::OpenGLApp(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
+App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_width(width), m_height(height), m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath) {}
 
-OpenGLApp::~OpenGLApp()
+App::~App()
 {
     if (this->m_window)
     {
@@ -23,17 +25,17 @@ OpenGLApp::~OpenGLApp()
     }
 }
 
-void OpenGLApp::run()
+void App::run()
 {
     initializeGLFW();
     createWindow(this->m_width, this->m_height);
     initializeGLAD();
-    initializeShader();
+    initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
     init();
     gameLoop();
 }
 
-void OpenGLApp::initializeGLFW()
+void App::initializeGLFW()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -45,7 +47,7 @@ void OpenGLApp::initializeGLFW()
 #endif
 }
 
-void OpenGLApp::createWindow(unsigned int screenWidth, unsigned int screenHeight)
+void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 {
     this->m_window = glfwCreateWindow(screenWidth, screenHeight, "Scene", NULL, NULL);
     if (!m_window)
@@ -58,7 +60,7 @@ void OpenGLApp::createWindow(unsigned int screenWidth, unsigned int screenHeight
     glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
-void OpenGLApp::initializeGLAD()
+void App::initializeGLAD()
 {
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -67,12 +69,12 @@ void OpenGLApp::initializeGLAD()
     }
 }
 
-void OpenGLApp::initializeShader()
+void App::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
-    this->m_shader = Shader("shader.vs", "shader.fs");
+    this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
 }
 
-void OpenGLApp::init()
+void App::init()
 {
     float vertices[] = {
          0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
@@ -110,7 +112,7 @@ void OpenGLApp::init()
     glBindVertexArray(0);
 }
 
-void OpenGLApp::gameLoop()
+void App::gameLoop()
 {
     while (!glfwWindowShouldClose(this->m_window))
     {
@@ -122,7 +124,7 @@ void OpenGLApp::gameLoop()
     }
 }
 
-void OpenGLApp::render()
+void App::render()
 {
     static const float black[] = {1.0f, 0.0f, 0.0f, 0.0f };
     glClearBufferfv(GL_COLOR, 0, black);
@@ -131,7 +133,7 @@ void OpenGLApp::render()
     glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
 
-void OpenGLApp::transform(Shader shader)
+void App::transform(Shader shader)
 {
     glm::mat4 transform = glm::mat4(1.0f);
     
@@ -140,7 +142,7 @@ void OpenGLApp::transform(Shader shader)
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 }
 
-void OpenGLApp::processInput(GLFWwindow * window)
+void App::processInput(GLFWwindow * window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
