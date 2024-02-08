@@ -57,54 +57,17 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 
 void App::init()
 {
-    //float vertices[] = {
-    //    // Rectangle 1 (Top Right)
-    //    1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-    //    0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-    //    0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
-    //    1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    Rectangle rectangle1(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    m_shapes.push_back(rectangle1);
 
-    //    // Rectangle 2 (Bottom Right)
-    //    1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-    //    0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-    //    0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
-    //    1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    Rectangle rectangle2(1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    m_shapes.push_back(rectangle2);
 
-    //    // Rectangle 3 (Bottom Left)
-    //    -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-    //    -0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-    //    -0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
-    //    -1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+    Rectangle rectangle3(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    m_shapes.push_back(rectangle3);
 
-    //    // Rectangle 4 (Top Left)
-    //    -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-    //    -0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-    //    -0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
-    //    -1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f// bottom left
-    //};
-
-    //unsigned int indices[] = {
-    //    0, 1, 2,  // first Triangle
-    //    2, 3, 0,   // second Triangle
-
-    //    4, 5, 6,  // third Triangle
-    //    6, 7, 4,   // fourth Triangle
-
-    //    8, 9, 10,  // fifth Triangle
-    //    10, 11, 8, // sixth Triangle
-
-    //    12, 13, 14, // seventh Triangle
-    //    14, 15, 12 // eighth Triangle
-    //};
-
-    //std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
-    //std::vector<unsigned int> indicesVec(indices, indices + sizeof(indices) / sizeof(unsigned int));
-
-    //Shape rectangle(verticesVec, indicesVec);
-    Rectangle rectangle(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f);
-    addShape(rectangle);
-    
-    m_renderer->init(rectangle);
+    Rectangle rectangle4(0.0f, -0.5f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    m_shapes.push_back(rectangle3);
 }
 
 void App::gameLoop()
@@ -121,9 +84,12 @@ void App::gameLoop()
 
 void App::render()
 {
+    static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
+    glClearBufferfv(GL_COLOR, 0, black);
+    glClear(GL_COLOR_BUFFER_BIT);
     for (const Rectangle& shape : m_shapes)
     {
-        m_renderer->render();
+        m_renderer->render(shape);
     }
 }
 

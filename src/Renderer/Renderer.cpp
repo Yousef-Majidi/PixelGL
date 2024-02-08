@@ -8,13 +8,12 @@ Renderer::Renderer() {}
 
 Renderer::~Renderer()
 {
-    glDeleteVertexArrays(1, &this->VAO);
-    glDeleteBuffers(1, &this->VBO);
+    
 }
 
 void Renderer::setNumVertices(GLuint numVertices)
 {
-    m_numVertices = numVertices;
+    // m_numVertices = numVertices;
 }
 
 const Shader Renderer::getShader() const
@@ -48,38 +47,9 @@ void Renderer::initializeShader(const char* vertexShaderPath, const char* fragme
     this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
 }
 
-void Renderer::init(const Rectangle& shape)
+void Renderer::render(const Rectangle& shape)
 {
-    this->m_numVertices = shape.getIndicesSize() / sizeof(unsigned int);
-    std::cout << "number of vertices: " << m_numVertices << std::endl;
-
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-    glGenBuffers(1, &this->EBO);
-    glBindVertexArray(this->VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, shape.getVerticesSize(), shape.getVertices().data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.getIndicesSize(), shape.getIndices().data(), GL_STATIC_DRAW);
-
-    // position attribute pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute pointer
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-void Renderer::render()
-{
-    static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
-    glClearBufferfv(GL_COLOR, 0, black);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(shape.getVAO());
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.getEBO());
+    glDrawElements(GL_TRIANGLES, shape.getNumVertices(), GL_UNSIGNED_INT, 0);
 }

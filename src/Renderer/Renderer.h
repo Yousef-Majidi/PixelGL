@@ -12,19 +12,14 @@ public:
 	~Renderer();
 
 	void setNumVertices(GLuint numVertices);
-
 	const Shader getShader() const;
 
 	void initializeGLFW();
 	void initializeGLAD();
 	void initializeShader(const char*, const char*);
-	void init(const Rectangle& shape);
-	void render();
+	void render(const Rectangle& shape);
 
 private:
-	GLuint VAO{}, VBO{}, EBO{}; // OpenGL buffers
-	GLuint m_numVertices{}; // Number of vertices in the VBO
-
 	Shader m_shader{};
 };
 #endif // !RENDERER_H
