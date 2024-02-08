@@ -3,9 +3,12 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vector>
+#include <memory>
 
 #include "../Shader/shaderinit.h"
 #include "../Shape/Shape.h"
+#include "../Renderer/Renderer.h"
 
 class App
 {
@@ -14,7 +17,7 @@ public:
 	App(unsigned int, unsigned int, const char*, const char*);
 	~App();
 	void run();
-	void addShape(Shape shape);
+	void addShape(const Shape& shape);
 
 private:
 	const char* m_vertexShaderPath = nullptr;
@@ -22,12 +25,10 @@ private:
 	unsigned int m_width{}, m_height{};
 	Shader m_shader{};
 	GLFWwindow* m_window{};
-	GLuint m_numVertices{}; // Number of vertices in the VBO
-	GLuint VAO{}, VBO{}, EBO{}; // OpenGL buffers
+	//std::vector<Shape> m_shapes{};
+	std::unique_ptr<Renderer> m_renderer;
 
-	void initializeGLFW();
 	void createWindow(unsigned int, unsigned int);
-	void initializeGLAD();
 	void initializeShader(const char*, const char*);
 	void init();
 	void gameLoop();

@@ -1,25 +1,17 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-#include <glad/glad.h>
+# include <vector>
 
 class Shape
 {
 public:
-	Shape(float* vertices, unsigned int* indices, unsigned int numVertices);
-	~Shape();
+	Shape(const std::vector<float>& vertices, const std::vector<unsigned int>& indices);
 
-	GLuint getVAO() const;
-	GLuint GetNumVertices() const;
-
-	void generateBuffers();
-	void bindBuffers();
-
+	const std::vector<float>& getVertices() const;
+	const std::vector<unsigned int>& getIndices() const;
 private:
-	float* m_vertices;
-	unsigned int* m_indices;
-	unsigned int m_numVertices;
-
-	GLuint VAO{}, VBO{}, EBO{}; // OpenGL buffers
+	std::vector<float> m_vertices;
+	std::vector<unsigned int> m_indices;
 };
 #endif // !SHAPE_H

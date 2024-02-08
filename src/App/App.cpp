@@ -14,9 +14,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_width(width), m_height(height), m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
 {
-    initializeGLFW();
+    m_renderer = std::make_unique<Renderer>();
+    m_renderer->initializeGLFW();
     createWindow(this->m_width, this->m_height);
-    initializeGLAD();
+    m_renderer->initializeGLAD();
     initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
     init();
 }
@@ -26,37 +27,18 @@ App::~App()
     if (this->m_window)
     {
         glfwDestroyWindow(this->m_window);
-        glDeleteVertexArrays(1, &this->VAO);
-        glDeleteBuffers(1, &this->VBO);
         glfwTerminate();
     }
 }
 
 void App::run()
 {
-    // initializeGLFW();
-    // createWindow(this->m_width, this->m_height);
-    // initializeGLAD();
-    // initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
-    // init();
     gameLoop();
 }
 
 void App::addShape(const Shape& shape)
 {
     //m_shapes.push_back(shape);
-}
-
-void App::initializeGLFW()
-{
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
 }
 
 void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
@@ -70,15 +52,6 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
     }
     glfwMakeContextCurrent(this->m_window);
     glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
-}
-
-void App::initializeGLAD()
-{
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return;
-    }
 }
 
 void App::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
@@ -104,29 +77,7 @@ void App::init()
     Shape shape(verticesVec, indicesVec);
     addShape(shape);*/
     
-    // determine the number of vertices
-    this->m_numVertices = sizeof(indices) / sizeof(indices[0]);
-
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-    glGenBuffers(1, &this->EBO);
-    glBindVertexArray(this->VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // position attribute pointer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute pointer
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    m_renderer->init();
 }
 
 void App::gameLoop()
@@ -143,15 +94,7 @@ void App::gameLoop()
 
 void App::render()
 {
-    static const float black[] = {1.0f, 0.0f, 0.0f, 0.0f };
-    glClearBufferfv(GL_COLOR, 0, black);
-    glClear(GL_COLOR_BUFFER_BIT);
-    /*for (const Shape& shape : m_shapes)
-    {
-        m_renderer->render(shape);
-    }*/
-    glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+    m_renderer->render();
 }
 
 void App::transform(Shader shader)
