@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "../Shape/Shape.h"
+#include "../Shader/shaderinit.h"
 
 class Renderer
 {
@@ -13,13 +14,18 @@ public:
 
 	void setNumVertices(GLuint numVertices);
 
+	Shader getShader() const;
+
 	void initializeGLFW();
 	void initializeGLAD();
-	void init();
+	void initializeShader(const char*, const char*);
+	void init(const Shape& shape);
 	void render();
 
 private:
 	GLuint VAO{}, VBO{}, EBO{}; // OpenGL buffers
 	GLuint m_numVertices{}; // Number of vertices in the VBO
+
+	Shader m_shader{};
 };
 #endif // !RENDERER_H

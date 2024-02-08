@@ -23,13 +23,11 @@ private:
 	const char* m_vertexShaderPath = nullptr;
 	const char* m_fragmentShaderPath = nullptr;
 	unsigned int m_width{}, m_height{};
-	Shader m_shader{};
 	GLFWwindow* m_window{};
-	//std::vector<Shape> m_shapes{};
+	std::vector<Shape> m_shapes{};
 	std::unique_ptr<Renderer> m_renderer;
 
 	void createWindow(unsigned int, unsigned int);
-	void initializeShader(const char*, const char*);
 	void init();
 	void gameLoop();
 	void render();

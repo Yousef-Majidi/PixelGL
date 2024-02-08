@@ -18,7 +18,7 @@ App::App(unsigned int width, unsigned int height, const char* vertextShaderPath,
     m_renderer->initializeGLFW();
     createWindow(this->m_width, this->m_height);
     m_renderer->initializeGLAD();
-    initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
+    m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
     init();
 }
 
@@ -38,7 +38,7 @@ void App::run()
 
 void App::addShape(const Shape& shape)
 {
-    //m_shapes.push_back(shape);
+    m_shapes.push_back(shape);
 }
 
 void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
@@ -54,30 +54,65 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
     glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
-void App::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
-{
-    this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
-}
-
 void App::init()
 {
+    //float vertices[] = {
+    //     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
+    //     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+    //    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+    //    -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left 
+    //};
+    //unsigned int indices[] = {
+    //    0, 1, 3,  // first Triangle
+    //    1, 2, 3   // second Triangle
+    //};
     float vertices[] = {
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left 
-    };
-    unsigned int indices[] = {
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
+        // Rectangle 1 (Top Right)
+        1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+        0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+        0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+        1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+
+        // Rectangle 2 (Bottom Right)
+        1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+        0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+        0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+        1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+
+        // Rectangle 3 (Bottom Left)
+        -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+        -0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+        -0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+        -1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+
+        // Rectangle 4 (Top Left)
+        -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+        -0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+        -0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+        -1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f// bottom left
     };
 
-    /*std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
+    unsigned int indices[] = {
+        0, 1, 2,  // first Triangle
+        2, 3, 0,   // second Triangle
+
+        4, 5, 6,  // third Triangle
+        6, 7, 4,   // fourth Triangle
+
+        8, 9, 10,  // fifth Triangle
+        10, 11, 8, // sixth Triangle
+
+        12, 13, 14, // seventh Triangle
+        14, 15, 12 // eighth Triangle
+    };
+
+    std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
     std::vector<unsigned int> indicesVec(indices, indices + sizeof(indices) / sizeof(unsigned int));
-    Shape shape(verticesVec, indicesVec);
-    addShape(shape);*/
+
+    Shape rectangle(verticesVec, indicesVec);
+    addShape(rectangle);
     
-    m_renderer->init();
+    m_renderer->init(rectangle);
 }
 
 void App::gameLoop()
@@ -85,7 +120,7 @@ void App::gameLoop()
     while (!glfwWindowShouldClose(this->m_window))
     {
         processInput(this->m_window);
-        transform(m_shader);
+        transform(m_renderer->getShader());
         render();
         glfwSwapBuffers(this->m_window);
         glfwPollEvents();
@@ -94,7 +129,10 @@ void App::gameLoop()
 
 void App::render()
 {
-    m_renderer->render();
+    for (const Shape& shape : m_shapes)
+    {
+        m_renderer->render();
+    }
 }
 
 void App::transform(Shader shader)

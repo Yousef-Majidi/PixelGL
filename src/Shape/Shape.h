@@ -10,6 +10,9 @@ public:
 
 	const std::vector<float>& getVertices() const;
 	const std::vector<unsigned int>& getIndices() const;
+
+	const float getVerticesSize() const;
+	const unsigned int getIndicesSize() const;
 private:
 	std::vector<float> m_vertices;
 	std::vector<unsigned int> m_indices;

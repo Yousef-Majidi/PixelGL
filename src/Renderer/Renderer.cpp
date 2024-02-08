@@ -3,10 +3,7 @@
 #include <iostream>
 #include "Renderer.h"
 
-Renderer::Renderer()
-{
-	
-}
+Renderer::Renderer() {}
 
 Renderer::~Renderer()
 {
@@ -17,6 +14,11 @@ Renderer::~Renderer()
 void Renderer::setNumVertices(GLuint numVertices)
 {
     m_numVertices = numVertices;
+}
+
+Shader Renderer::getShader() const
+{
+    return m_shader;
 }
 
 void Renderer::initializeGLFW()
@@ -40,20 +42,15 @@ void Renderer::initializeGLAD()
     }
 }
 
-void Renderer::init()
+void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
-    float vertices[] = {
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left 
-    };
-    unsigned int indices[] = {
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
-    };
+    this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
+}
 
-    this->m_numVertices = sizeof(indices) / sizeof(indices[0]);
+void Renderer::init(const Shape& shape)
+{
+    this->m_numVertices = shape.getIndicesSize() / sizeof(unsigned int);
+    std::cout << "number of vertices: " << m_numVertices << std::endl;
 
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
@@ -61,10 +58,10 @@ void Renderer::init()
     glBindVertexArray(this->VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, shape.getVerticesSize(), shape.getVertices().data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.getIndicesSize(), shape.getIndices().data(), GL_STATIC_DRAW);
 
     // position attribute pointer
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -83,10 +80,6 @@ void Renderer::render()
     static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
     glClearBufferfv(GL_COLOR, 0, black);
     glClear(GL_COLOR_BUFFER_BIT);
-    /*for (const Shape& shape : m_shapes)
-    {
-        m_renderer->render(shape);
-    }*/
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
