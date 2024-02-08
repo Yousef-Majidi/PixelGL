@@ -1,5 +1,5 @@
-// #include <GLFW/glfw3.h>
-// #include <glad/glad.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include "Renderer.h"
 
@@ -16,7 +16,7 @@ void Renderer::setNumVertices(GLuint numVertices)
     m_numVertices = numVertices;
 }
 
-Shader Renderer::getShader() const
+const Shader Renderer::getShader() const
 {
     return m_shader;
 }

@@ -2,7 +2,6 @@
 #define RENDERER_H
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include "../Shape/Shape.h"
 #include "../Shader/shaderinit.h"
 
@@ -14,7 +13,7 @@ public:
 
 	void setNumVertices(GLuint numVertices);
 
-	Shader getShader() const;
+	const Shader getShader() const;
 
 	void initializeGLFW();
 	void initializeGLAD();

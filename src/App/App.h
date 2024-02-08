@@ -1,5 +1,5 @@
-#ifndef APP
-#define APP
+#ifndef APP_H
+#define APP_H
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -35,4 +35,4 @@ private:
 	void processInput(GLFWwindow*);
 };
 
-#endif // !App
+#endif // !App_H
