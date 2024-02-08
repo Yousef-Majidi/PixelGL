@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Renderer.h"
+#include "../Shapes/Rectangle/Rectangle.h"
 
 Renderer::Renderer() {}
 
@@ -47,7 +48,7 @@ void Renderer::initializeShader(const char* vertexShaderPath, const char* fragme
     this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
 }
 
-void Renderer::init(const Shape& shape)
+void Renderer::init(const Rectangle& shape)
 {
     this->m_numVertices = shape.getIndicesSize() / sizeof(unsigned int);
     std::cout << "number of vertices: " << m_numVertices << std::endl;
@@ -74,7 +75,6 @@ void Renderer::init(const Shape& shape)
     glBindVertexArray(0);
 }
 
-
 void Renderer::render()
 {
     static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -83,4 +83,3 @@ void Renderer::render()
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
-

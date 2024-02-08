@@ -7,6 +7,7 @@
 
 #include "App.h"
 #include "../Shader/shaderinit.h"
+#include "../Shapes/Rectangle/Rectangle.h"
 
 using std::string;
 
@@ -36,7 +37,7 @@ void App::run()
     gameLoop();
 }
 
-void App::addShape(const Shape& shape)
+void App::addShape(const Rectangle& shape)
 {
     m_shapes.push_back(shape);
 }
@@ -56,50 +57,51 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 
 void App::init()
 {
-    float vertices[] = {
-        // Rectangle 1 (Top Right)
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-        0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-        0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
-        1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    //float vertices[] = {
+    //    // Rectangle 1 (Top Right)
+    //    1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+    //    0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+    //    0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    //    1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
 
-        // Rectangle 2 (Bottom Right)
-        1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-        0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
-        0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
-        1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    //    // Rectangle 2 (Bottom Right)
+    //    1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+    //    0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // top right
+    //    0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
+    //    1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom right
 
-        // Rectangle 3 (Bottom Left)
-        -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-        -0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-        -0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
-        -1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+    //    // Rectangle 3 (Bottom Left)
+    //    -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+    //    -0.7f, -1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+    //    -0.7f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+    //    -1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
 
-        // Rectangle 4 (Top Left)
-        -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-        -0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
-        -0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
-        -1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f// bottom left
-    };
+    //    // Rectangle 4 (Top Left)
+    //    -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+    //    -0.7f,  1.0f, 0.0f, 1.0f, 1.0f, 0.5f, // top left
+    //    -0.7f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f, // bottom left
+    //    -1.0f,  0.7f, 0.0f, 1.0f, 1.0f, 0.5f// bottom left
+    //};
 
-    unsigned int indices[] = {
-        0, 1, 2,  // first Triangle
-        2, 3, 0,   // second Triangle
+    //unsigned int indices[] = {
+    //    0, 1, 2,  // first Triangle
+    //    2, 3, 0,   // second Triangle
 
-        4, 5, 6,  // third Triangle
-        6, 7, 4,   // fourth Triangle
+    //    4, 5, 6,  // third Triangle
+    //    6, 7, 4,   // fourth Triangle
 
-        8, 9, 10,  // fifth Triangle
-        10, 11, 8, // sixth Triangle
+    //    8, 9, 10,  // fifth Triangle
+    //    10, 11, 8, // sixth Triangle
 
-        12, 13, 14, // seventh Triangle
-        14, 15, 12 // eighth Triangle
-    };
+    //    12, 13, 14, // seventh Triangle
+    //    14, 15, 12 // eighth Triangle
+    //};
 
-    std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
-    std::vector<unsigned int> indicesVec(indices, indices + sizeof(indices) / sizeof(unsigned int));
+    //std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
+    //std::vector<unsigned int> indicesVec(indices, indices + sizeof(indices) / sizeof(unsigned int));
 
-    Shape rectangle(verticesVec, indicesVec);
+    //Shape rectangle(verticesVec, indicesVec);
+    Rectangle rectangle(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f);
     addShape(rectangle);
     
     m_renderer->init(rectangle);
@@ -119,7 +121,7 @@ void App::gameLoop()
 
 void App::render()
 {
-    for (const Shape& shape : m_shapes)
+    for (const Rectangle& shape : m_shapes)
     {
         m_renderer->render();
     }

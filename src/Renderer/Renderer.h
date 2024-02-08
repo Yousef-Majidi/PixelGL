@@ -2,7 +2,7 @@
 #define RENDERER_H
 
 #include <glad/glad.h>
-#include "../Shape/Shape.h"
+#include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shader/shaderinit.h"
 
 class Renderer
@@ -18,7 +18,7 @@ public:
 	void initializeGLFW();
 	void initializeGLAD();
 	void initializeShader(const char*, const char*);
-	void init(const Shape& shape);
+	void init(const Rectangle& shape);
 	void render();
 
 private:
