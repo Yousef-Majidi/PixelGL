@@ -12,7 +12,14 @@ using std::string;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_width(width), m_height(height), m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath) {}
+App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_width(width), m_height(height), m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
+{
+    initializeGLFW();
+    createWindow(this->m_width, this->m_height);
+    initializeGLAD();
+    initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
+    init();
+}
 
 App::~App()
 {
@@ -27,12 +34,17 @@ App::~App()
 
 void App::run()
 {
-    initializeGLFW();
-    createWindow(this->m_width, this->m_height);
-    initializeGLAD();
-    initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
-    init();
+    // initializeGLFW();
+    // createWindow(this->m_width, this->m_height);
+    // initializeGLAD();
+    // initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
+    // init();
     gameLoop();
+}
+
+void App::addShape(const Shape& shape)
+{
+    //m_shapes.push_back(shape);
 }
 
 void App::initializeGLFW()
@@ -86,6 +98,11 @@ void App::init()
         0, 1, 3,  // first Triangle
         1, 2, 3   // second Triangle
     };
+
+    /*std::vector<float> verticesVec(vertices, vertices + sizeof(vertices) / sizeof(float));
+    std::vector<unsigned int> indicesVec(indices, indices + sizeof(indices) / sizeof(unsigned int));
+    Shape shape(verticesVec, indicesVec);
+    addShape(shape);*/
     
     // determine the number of vertices
     this->m_numVertices = sizeof(indices) / sizeof(indices[0]);
@@ -129,6 +146,10 @@ void App::render()
     static const float black[] = {1.0f, 0.0f, 0.0f, 0.0f };
     glClearBufferfv(GL_COLOR, 0, black);
     glClear(GL_COLOR_BUFFER_BIT);
+    /*for (const Shape& shape : m_shapes)
+    {
+        m_renderer->render(shape);
+    }*/
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
