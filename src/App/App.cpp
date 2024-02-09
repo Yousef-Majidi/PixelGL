@@ -53,6 +53,8 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
         return;
     }
     glfwMakeContextCurrent(this->m_window);
+    glfwSetWindowUserPointer(this->m_window, this);
+    glfwSetKeyCallback(this->m_window, keyCallback);
     glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
@@ -70,32 +72,32 @@ void App::init()
     m_shapes.push_back(rectangle1);
 
     // pink 
-    glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
-    float size2 = 0.3f;
-    glm::vec3 color2 = glm::vec3(1.0f, 0.0f, 1.0f);
-    Rectangle rectangle2(coordinates2, size2, color2);
-    m_shapes.push_back(rectangle2);
+    //glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
+    //float size2 = 0.3f;
+    //glm::vec3 color2 = glm::vec3(1.0f, 0.0f, 1.0f);
+    //Rectangle rectangle2(coordinates2, size2, color2);
+    //m_shapes.push_back(rectangle2);
 
-    // yellow
-    glm::vec3 coordinates3 = glm::vec3(-0.7f, -0.7f, 0.0f);
-    float size3 = 0.2f;
-    glm::vec3 color3 = glm::vec3(1.0f, 1.0f, 0.0f);
-    Rectangle rectangle3(coordinates3, size3, color3);
-    m_shapes.push_back(rectangle3);
+    //// yellow
+    //glm::vec3 coordinates3 = glm::vec3(-0.7f, -0.7f, 0.0f);
+    //float size3 = 0.2f;
+    //glm::vec3 color3 = glm::vec3(1.0f, 1.0f, 0.0f);
+    //Rectangle rectangle3(coordinates3, size3, color3);
+    //m_shapes.push_back(rectangle3);
 
-    // green
-    glm::vec3 coordinates4 = glm::vec3(0.7f, -0.7f, 0.0f);
-    float size4 = 0.1f;
-    glm::vec3 color4 = glm::vec3(0.0f, 1.0f, 0.0f);
-    Rectangle rectangle4(coordinates4, size4, color4);
-    m_shapes.push_back(rectangle4);
+    //// green
+    //glm::vec3 coordinates4 = glm::vec3(0.7f, -0.7f, 0.0f);
+    //float size4 = 0.1f;
+    //glm::vec3 color4 = glm::vec3(0.0f, 1.0f, 0.0f);
+    //Rectangle rectangle4(coordinates4, size4, color4);
+    //m_shapes.push_back(rectangle4);
 }
 
 void App::gameLoop()
 {
     while (!glfwWindowShouldClose(this->m_window))
     {
-        processInput(this->m_window);
+        //processInput(this->m_window);
         transform(m_renderer->getShader());
         render();
         glfwSwapBuffers(this->m_window);
@@ -123,10 +125,19 @@ void App::transform(Shader shader)
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 }
 
-void App::processInput(GLFWwindow * window)
+//void App::processInput(GLFWwindow * window)
+//{
+//    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//        glfwSetWindowShouldClose(window, true);
+//}
+
+void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        std::cout << "Exiting the game..." << std::endl;
+		glfwSetWindowShouldClose(window, true);
+    }
 }
 
 // glfw: viewport to window adjustment

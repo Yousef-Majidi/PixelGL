@@ -12,21 +12,18 @@ public:
 	Rectangle(glm::vec3 center, float size, glm::vec3 color);
 	~Rectangle();
 
-	const std::vector<float>& getVertices() const;
-	const std::vector<unsigned int>& getIndices() const;
-
-	const float getVerticesSize() const;
-	const unsigned int getIndicesSize() const;
 	const GLuint getVAO() const;
 	const GLuint getEBO() const;
 	const GLuint getNumVertices() const;
 private:
-	std::vector<float> m_vertices;
-	std::vector<unsigned int> m_indices;
-
 	GLuint VAO{}, VBO{}, EBO{};
 	GLuint m_numVertices{};
+	std::vector<float> m_vertices;
+	std::vector<unsigned int> m_indices;
+	glm::vec3 m_center{};
 
+	const float getVerticesSize() const;
+	const unsigned int getIndicesSize() const;
 	void generateVertices(glm::vec3 center, float size, glm::vec3 color);
 	void generateIndices();
 	void generateBuffers();

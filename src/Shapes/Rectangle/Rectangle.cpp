@@ -5,13 +5,11 @@
 
 #include "Rectangle.h"
 
-Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color)
+Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_center(center)
 {
 	generateVertices(center, size, color);
 	generateIndices();
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
-	std::cout << "number of vertices: " << m_numVertices << std::endl;
-
 	generateBuffers();
 }
 
@@ -20,26 +18,6 @@ Rectangle::~Rectangle()
 	// TODO: figure this out later
 	/*glDeleteVertexArrays(1, &this->VAO);
 	glDeleteBuffers(1, &this->VBO);*/
-}
-
-const std::vector<float>& Rectangle::getVertices() const
-{
-	return this->m_vertices;
-}
-
-const std::vector<unsigned int>& Rectangle::getIndices() const
-{
-	return this->m_indices;
-}
-
-const float Rectangle::getVerticesSize() const
-{
-	return m_vertices.size() * sizeof(float);
-}
-
-const unsigned int Rectangle::getIndicesSize() const
-{
-	return m_indices.size() * sizeof(unsigned int);
 }
 
 const GLuint Rectangle::getVAO() const
@@ -55,6 +33,16 @@ const GLuint Rectangle::getEBO() const
 const GLuint Rectangle::getNumVertices() const
 {
 	return this->m_numVertices;
+}
+
+const float Rectangle::getVerticesSize() const
+{
+	return m_vertices.size() * sizeof(float);
+}
+
+const unsigned int Rectangle::getIndicesSize() const
+{
+	return m_indices.size() * sizeof(unsigned int);
 }
 
 void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)

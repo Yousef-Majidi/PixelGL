@@ -31,8 +31,9 @@ private:
 	void gameLoop();
 	void render();
 	void transform(Shader);
-	void processInput(GLFWwindow*);
+	//void processInput(GLFWwindow*);
 
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 
