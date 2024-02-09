@@ -1,22 +1,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+
+#include "../Shader/shaderinit.h"
 #include "Renderer.h"
-#include "../Shapes/Rectangle/Rectangle.h"
 
 Renderer::Renderer() {}
 
-Renderer::~Renderer()
-{
-    
-}
+Renderer::~Renderer() {}
 
-void Renderer::setNumVertices(GLuint numVertices)
-{
-    // m_numVertices = numVertices;
-}
-
-const Shader Renderer::getShader() const
+Shader Renderer::getShader() const
 {
     return m_shader;
 }
@@ -45,6 +39,11 @@ void Renderer::initializeGLAD()
 void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
     this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    m_shader.use();
+    unsigned int transformLoc = glGetUniformLocation(m_shader.ID, "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 }
 
 void Renderer::render(const GLuint VAO, const GLuint EBO, const GLuint numVertices)

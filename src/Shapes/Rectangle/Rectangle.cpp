@@ -1,12 +1,13 @@
-#include <glm/glm.hpp>
 #include <glad/glad.h>
-#include <iostream>
-#include <vector>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Rectangle.h"
 
 Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_center(center)
 {
+	m_transform = glm::mat4{ 1.0f };
 	generateVertices(center, size, color);
 	generateIndices();
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
@@ -35,6 +36,24 @@ const GLuint Rectangle::getNumVertices() const
 	return this->m_numVertices;
 }
 
+const glm::mat4 Rectangle::getTransform() const
+{
+	return this->m_transform;
+}
+
+void Rectangle::resetTransform()
+{
+	m_transform = glm::mat4{ 1.0f };
+}
+
+void Rectangle::rotate(float angle)
+{
+	glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
+	glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
+	m_transform = translateBack * rotate * translate * m_transform;
+}
+
 const float Rectangle::getVerticesSize() const
 {
 	return m_vertices.size() * sizeof(float);
@@ -60,8 +79,8 @@ void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
 void Rectangle::generateIndices()
 {
 	m_indices = {
-		0, 1, 2,  // first Triangle
-		2, 3, 0   // second Triangle
+		0, 1, 2,  
+		2, 3, 0   
 	};
 }
 

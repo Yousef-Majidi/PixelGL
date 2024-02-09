@@ -2,7 +2,6 @@
 #define RENDERER_H
 
 #include <glad/glad.h>
-#include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shader/shaderinit.h"
 
 class Renderer
@@ -11,9 +10,7 @@ public:
 	Renderer();
 	~Renderer();
 
-	void setNumVertices(GLuint numVertices);
-	const Shader getShader() const;
-
+	Shader getShader() const;
 	void initializeGLFW();
 	void initializeGLAD();
 	void initializeShader(const char*, const char*);

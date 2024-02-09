@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "../Renderer/Renderer.h"
-#include "../Shader/shaderinit.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 
 class App
@@ -30,8 +29,6 @@ private:
 	void init();
 	void gameLoop();
 	void render();
-	void transform(Shader);
-	//void processInput(GLFWwindow*);
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
