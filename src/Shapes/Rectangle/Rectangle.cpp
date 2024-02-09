@@ -1,34 +1,18 @@
+#include <glm/glm.hpp>
+#include <glad/glad.h>
 #include <iostream>
+#include <vector>
+
 #include "Rectangle.h"
 
-Rectangle::Rectangle(float x, float y, float z, float r, float g, float b, float a)
+Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color)
 {
-	generateVertices(x, y, z, r, g, b, a);
+	generateVertices(center, size, color);
 	generateIndices();
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
 	std::cout << "number of vertices: " << m_numVertices << std::endl;
 
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->VBO);
-	glGenBuffers(1, &this->EBO);
-	glBindVertexArray(this->VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glBufferData(GL_ARRAY_BUFFER, getVerticesSize(), m_vertices.data(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndicesSize(), m_indices.data(), GL_STATIC_DRAW);
-
-	// position attribute pointer
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// color attribute pointer
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	generateBuffers();
 }
 
 Rectangle::~Rectangle()
@@ -73,14 +57,15 @@ const GLuint Rectangle::getNumVertices() const
 	return this->m_numVertices;
 }
 
-void Rectangle::generateVertices(float x, float y, float z, float r, float g, float b, float a)
+void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
 {
-	// TODO: Fix this logic. It's causing shapes to fall outside of the screen
-	m_vertices = {
-		x, y, z, r, g, b, // top right
-		x - 0.3f, y, z, r, g, b, // top left
-		x - 0.3f, y - 0.3f, z, r, g, b, // bottom left
-		x, y - 0.3f, z, r, g, b // bottom right
+	float halfSize = size / 2.0f;
+	m_vertices =
+	{
+		center.x + halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top right
+		center.x - halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top left
+		center.x - halfSize, center.y - halfSize, center.z, color.r, color.g, color.b, // bottom left
+		center.x + halfSize, center.y - halfSize, center.z, color.r, color.g, color.b // bottom right
 	};
 }
 
@@ -90,4 +75,29 @@ void Rectangle::generateIndices()
 		0, 1, 2,  // first Triangle
 		2, 3, 0   // second Triangle
 	};
+}
+
+void Rectangle::generateBuffers()
+{
+	glGenVertexArrays(1, &this->VAO);
+	glGenBuffers(1, &this->VBO);
+	glGenBuffers(1, &this->EBO);
+	glBindVertexArray(this->VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBufferData(GL_ARRAY_BUFFER, getVerticesSize(), m_vertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndicesSize(), m_indices.data(), GL_STATIC_DRAW);
+
+	// position attribute pointer
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute pointer
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

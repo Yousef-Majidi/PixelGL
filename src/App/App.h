@@ -3,12 +3,12 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <vector>
 #include <memory>
+#include <vector>
 
+#include "../Renderer/Renderer.h"
 #include "../Shader/shaderinit.h"
 #include "../Shapes/Rectangle/Rectangle.h"
-#include "../Renderer/Renderer.h"
 
 class App
 {
@@ -22,7 +22,6 @@ public:
 private:
 	const char* m_vertexShaderPath = nullptr;
 	const char* m_fragmentShaderPath = nullptr;
-	unsigned int m_width{}, m_height{};
 	GLFWwindow* m_window{};
 	std::vector<Rectangle> m_shapes{};
 	std::unique_ptr<Renderer> m_renderer;
@@ -33,6 +32,8 @@ private:
 	void render();
 	void transform(Shader);
 	void processInput(GLFWwindow*);
+
+	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 
 #endif // !App_H

@@ -1,14 +1,15 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include <vector>
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <vector>
 
 class Rectangle
 {
 public:
 	Rectangle() {};
-	Rectangle(float x, float y, float z, float r, float g, float b, float a);
+	Rectangle(glm::vec3 center, float size, glm::vec3 color);
 	~Rectangle();
 
 	const std::vector<float>& getVertices() const;
@@ -26,7 +27,8 @@ private:
 	GLuint VAO{}, VBO{}, EBO{};
 	GLuint m_numVertices{};
 
-	void generateVertices(float x, float y, float z, float r, float g, float b, float a);
+	void generateVertices(glm::vec3 center, float size, glm::vec3 color);
 	void generateIndices();
+	void generateBuffers();
 };
 #endif // !RECTANGLE_H

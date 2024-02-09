@@ -1,23 +1,24 @@
-#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <memory>
+#include <string>
 
-#include "App.h"
+#include "../Renderer/Renderer.h"
 #include "../Shader/shaderinit.h"
 #include "../Shapes/Rectangle/Rectangle.h"
+#include "App.h"
 
 using std::string;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
-App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_width(width), m_height(height), m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
+App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
 {
     m_renderer = std::make_unique<Renderer>();
     m_renderer->initializeGLFW();
-    createWindow(this->m_width, this->m_height);
+    createWindow(width, height);
     m_renderer->initializeGLAD();
     m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
     init();
@@ -40,7 +41,7 @@ void App::run()
 void App::addShape(const Rectangle& shape)
 {
     m_shapes.push_back(shape);
-}
+}               
 
 void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 {
@@ -57,17 +58,37 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 
 void App::init()
 {
-    Rectangle rectangle1(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    /**************************************************/
+    /*****************ADD SHAPES HERE******************/
+    /**************************************************/
+
+    // red
+    glm::vec3 coordinates = glm::vec3(0.0f, 0.0f, 0.0f);
+    float size = 0.5f;
+    glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
+    Rectangle rectangle1(coordinates, size, color); 
     m_shapes.push_back(rectangle1);
 
-    Rectangle rectangle2(1.0f, -0.7f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    // pink 
+    glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
+    float size2 = 0.3f;
+    glm::vec3 color2 = glm::vec3(1.0f, 0.0f, 1.0f);
+    Rectangle rectangle2(coordinates2, size2, color2);
     m_shapes.push_back(rectangle2);
 
-    Rectangle rectangle3(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
+    // yellow
+    glm::vec3 coordinates3 = glm::vec3(-0.7f, -0.7f, 0.0f);
+    float size3 = 0.2f;
+    glm::vec3 color3 = glm::vec3(1.0f, 1.0f, 0.0f);
+    Rectangle rectangle3(coordinates3, size3, color3);
     m_shapes.push_back(rectangle3);
 
-    Rectangle rectangle4(0.0f, -0.5f, 0.0f, 1.0f, 1.0f, 0.5f, 1.0f); // 
-    m_shapes.push_back(rectangle3);
+    // green
+    glm::vec3 coordinates4 = glm::vec3(0.7f, -0.7f, 0.0f);
+    float size4 = 0.1f;
+    glm::vec3 color4 = glm::vec3(0.0f, 1.0f, 0.0f);
+    Rectangle rectangle4(coordinates4, size4, color4);
+    m_shapes.push_back(rectangle4);
 }
 
 void App::gameLoop()
@@ -89,7 +110,7 @@ void App::render()
     glClear(GL_COLOR_BUFFER_BIT);
     for (const Rectangle& shape : m_shapes)
     {
-        m_renderer->render(shape);
+        m_renderer->render(shape.getVAO(), shape.getEBO(), shape.getNumVertices());
     }
 }
 
@@ -109,7 +130,7 @@ void App::processInput(GLFWwindow * window)
 }
 
 // glfw: viewport to window adjustment
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }

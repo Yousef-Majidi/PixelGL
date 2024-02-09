@@ -17,7 +17,7 @@ public:
 	void initializeGLFW();
 	void initializeGLAD();
 	void initializeShader(const char*, const char*);
-	void render(const Rectangle& shape);
+	void render(const GLuint VAO, const GLuint EBO, const GLuint numVertices);
 
 private:
 	Shader m_shader{};

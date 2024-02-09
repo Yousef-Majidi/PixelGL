@@ -47,9 +47,9 @@ void Renderer::initializeShader(const char* vertexShaderPath, const char* fragme
     this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
 }
 
-void Renderer::render(const Rectangle& shape)
+void Renderer::render(const GLuint VAO, const GLuint EBO, const GLuint numVertices)
 {
-    glBindVertexArray(shape.getVAO());
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.getEBO());
-    glDrawElements(GL_TRIANGLES, shape.getNumVertices(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
 }
