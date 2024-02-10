@@ -21,7 +21,7 @@ static bool ROTATE = false;
 static bool SCALE = false;
 static bool MOVE = false;
 static float R_ANGLE = 45.0f;
-static float S_FACTOR = 2.5f;
+static float S_FACTOR = 1.0f;
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -73,13 +73,6 @@ void App::init()
     /**************************************************/
     /*****************ADD SHAPES HERE******************/
     /**************************************************/
-
-    // blue shape at the center
-    /*glm::vec3 coordinates = glm::vec3(0.0f, 0.0f, 0.0f);
-    float size = 0.3f;
-    glm::vec3 color = glm::vec3(0.0f, 0.0f, 1.0f);
-    Rectangle rectangle1(coordinates, size, color);
-    m_shapes.push_back(rectangle1);*/
 
     // purple
     glm::vec3 coordinates = glm::vec3(-0.85f, 0.85f, 0.0f);
@@ -143,14 +136,14 @@ void App::render()
             shape.moveTo(center);
         }
 
-        // Reset transform and scale if none of ROTATE, SCALE, or MOVE is true
+        // Reset transforms
         if (!SCALE)
         {
             shape.resetScale();
         }
         if (!ROTATE)
         {
-            shape.resetTransform();
+            shape.resetRotation();
         }
         if (!MOVE)
         {
@@ -166,7 +159,7 @@ void App::render()
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if ((key == GLFW_KEY_ESCAPE || key == GLFW_KEY_M) && action == GLFW_PRESS)
     {
 		glfwSetWindowShouldClose(window, true);
         std::cout << "Exiting the game..." << std::endl;
@@ -181,20 +174,24 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
         ROTATE = !ROTATE;
-		std::cout << "Rotate: " << ROTATE << " - at index " << RAND << std::endl;
+		std::cout << "Rotate: " << (ROTATE ? "true" : "false") << " - at index " << RAND << std::endl;
 	}
 
     if (key == GLFW_KEY_S && action == GLFW_PRESS)
     {
 		SCALE = !SCALE;
-		S_FACTOR = SCALE ? 2.5f : 1.0f;
-        std::cout << "Scale: " << SCALE << " - at index " << RAND << std::endl;
+        if (!SCALE)
+            S_FACTOR = 1.0f;
+        else
+            S_FACTOR = 2.5f;
+        std::cout << "Scale: " << (SCALE ? "true" : "false") << " - at index " << RAND << std::endl;
+        std::cout << "Scale factor: " << S_FACTOR << std::endl;
     }
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
     {
         MOVE = !MOVE;
-        std::cout << "Move: " << MOVE << " - at index " << RAND << std::endl;
+        std::cout << "Move: " << (MOVE ? "true" : "false") << " - at index " << RAND << std::endl;
     }
 }
 
