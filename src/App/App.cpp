@@ -16,7 +16,7 @@
 using std::string;
 
 /************DEBUG*************/
-static unsigned int RAND = NULL;
+static unsigned int RAND = 0;
 static bool ROTATE = false;
 static bool SCALE = false;
 static bool MOVE = false;
