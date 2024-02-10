@@ -3,16 +3,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../../Color/Color.h"
 #include "Rectangle.h"
 
-Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_center(center)
+using glm::mat4;
+using glm::vec3;
+
+Rectangle::Rectangle(vec3 center, float size, Color color) : m_center(center), m_color(color)
 {
 	m_center = m_center;
-	m_transform = glm::mat4{ 1.0f };
-	m_rotation = glm::mat4{ 1.0f };
-	m_translation = glm::mat4{ 1.0f };
-	m_scale = glm::mat4{ 1.0f };
-	generateVertices(center, size, color);
+	m_transform = mat4{ 1.0f };
+	m_rotation = mat4{ 1.0f };
+	m_translation = mat4{ 1.0f };
+	m_scale = mat4{ 1.0f };
+	generateVertices(center, size, color.getRGB());
 	generateIndices();
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
 	generateBuffers();
@@ -40,51 +44,51 @@ const GLuint Rectangle::getNumVertices() const
 	return this->m_numVertices;
 }
 
-const glm::mat4 Rectangle::getTransform() const
+const mat4 Rectangle::getTransform() const
 {
 	return this->m_transform;
 }
 
 void Rectangle::resetRotation()
 {
-	m_rotation = glm::mat4(1.0f);
+	m_rotation = mat4(1.0f);
 	updateTransform();
 }
 
 void Rectangle::resetPosition()
 {
-	m_translation = glm::mat4(1.0f);
+	m_translation = mat4(1.0f);
 	updateTransform();
 }
 
 void Rectangle::resetScale()
 {
-	m_scale = glm::mat4(1.0f);
+	m_scale = mat4(1.0f);
 	updateTransform();
 }
 
 void Rectangle::rotate(float angle)
 {
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
-	glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
+	mat4 translate = glm::translate(mat4(1.0f), -m_center);
+	mat4 rotate = glm::rotate(mat4(1.0f), glm::radians(angle), vec3(0.0f, 0.0f, 1.0f));
+	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
 	m_rotation = translateBack * rotate * translate * m_rotation;
 	updateTransform();
 }
 
 void Rectangle::scale(float scaleFactor)
 {
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
+	mat4 translate = glm::translate(mat4(1.0f), -m_center);
+	mat4 scale = glm::scale(mat4(1.0f), vec3(scaleFactor, scaleFactor, scaleFactor));
+	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
 	m_scale = translateBack * scale * translate;
 	updateTransform();
 }
 
-void Rectangle::moveTo(glm::vec3 newPosition)
+void Rectangle::moveTo(vec3 newPosition)
 {
-	glm::vec3 translationVector = newPosition - m_center;
-	m_translation = glm::translate(glm::mat4(1.0f), translationVector);
+	vec3 translationVector = newPosition - m_center;
+	m_translation = glm::translate(mat4(1.0f), translationVector);
 	updateTransform();
 }
 
@@ -98,7 +102,7 @@ const unsigned int Rectangle::getIndicesSize() const
 	return m_indices.size() * sizeof(unsigned int);
 }
 
-void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
+void Rectangle::generateVertices(vec3 center, float size, vec3 color)
 {
 	float halfSize = size / 2.0f;
 	m_vertices =

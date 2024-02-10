@@ -12,7 +12,7 @@ private:
 	static float randomFloat();
 public:
 	Color() = default;
-	Color(float r, float g, float b, float a);
+	Color(float r, float g, float b, float a = 1.0f);
 	static const vec3 RED;
 	static const vec3 GREEN;
 	static const vec3 BLUE;
@@ -24,6 +24,6 @@ public:
 	static vec3 newColor(float r, float g, float b, float a = 1.0f);
 	static vec3 randomColor();
 
-	vec3 getColors() const;
+	vec3 getRGB() const;
 };
 #endif // !COLOR_H

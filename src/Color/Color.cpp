@@ -15,7 +15,10 @@ const vec3 Color::YELLOW = newColor(1.0f, 1.0f, 0.0f);
 const vec3 Color::CYAN = newColor(0.0f, 1.0f, 1.0f);
 const vec3 Color::MAGENTA = newColor(1.0f, 0.0f, 1.0f);
 
-Color::Color(float r, float g, float b, float a) : m_red(r), m_green(g), m_blue(b), m_alpha(a) {}
+Color::Color(float r, float g, float b, float a) : m_red(r), m_green(g), m_blue(b), m_alpha(a)
+{
+	m_colors = vec3(r, g, b);
+}
 
 float Color::randomFloat()
 {
@@ -34,7 +37,7 @@ glm::vec3 Color::randomColor()
 	return vec3();
 }
 
-vec3 Color::getColors() const
+vec3 Color::getRGB() const
 {
 	return this->m_colors;
 }
