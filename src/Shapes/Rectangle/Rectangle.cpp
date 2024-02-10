@@ -113,8 +113,8 @@ void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
 void Rectangle::generateIndices()
 {
 	m_indices = {
-		0, 1, 2,  
-		2, 3, 0   
+		0, 1, 2,
+		2, 3, 0
 	};
 }
 
