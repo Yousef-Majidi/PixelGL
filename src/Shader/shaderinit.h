@@ -1,12 +1,11 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glad/glad.h>
-
-#include <string>
 #include <fstream>
-#include <sstream>
+#include <glad/glad.h>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 class Shader
 {
