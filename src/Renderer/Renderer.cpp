@@ -1,0 +1,54 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+
+#include "../Shader/shaderinit.h"
+#include "Renderer.h"
+
+Renderer::Renderer() {}
+
+Renderer::~Renderer() {}
+
+Shader Renderer::getShader() const
+{
+    return m_shader;
+}
+
+void Renderer::initializeGLFW()
+{
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+}
+
+void Renderer::initializeGLAD()
+{
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return;
+    }
+}
+
+void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
+{
+    this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    m_shader.use();
+    unsigned int transformLoc = glGetUniformLocation(m_shader.ID, "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+}
+
+void Renderer::render(const GLuint VAO, const GLuint EBO, const GLuint numVertices)
+{
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+}

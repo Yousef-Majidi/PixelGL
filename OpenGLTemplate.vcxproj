@@ -132,17 +132,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="OpenGLApp.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\App\App.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Shapes\Rectangle\Rectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="shader.fs" />
-    <None Include="shader.vs" />
+    <None Include="src\Shader\shader.fs" />
+    <None Include="src\Shader\shader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGLApp.h" />
+    <ClInclude Include="src\App\App.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Shader\shaderinit.h" />
+    <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
