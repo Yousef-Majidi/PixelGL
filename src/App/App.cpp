@@ -20,6 +20,7 @@ static unsigned int RAND = 0;
 static bool ROTATE = false;
 static bool SCALE = false;
 static bool MOVE = false;
+static bool RESET = false;
 static float R_ANGLE = 45.0f;
 static float S_FACTOR = 1.0f;
 /************DEBUG*************/
@@ -149,6 +150,16 @@ void App::render()
         {
 			shape.resetPosition();
 		}
+        if (RESET)
+        {
+			shape.resetScale();
+            shape.resetRotation();
+            shape.resetPosition();
+            RESET = false;
+            ROTATE = false;
+            SCALE = false;
+            MOVE = false;
+		}
 
         m_renderer->getShader().use();
         unsigned int transformLoc = glGetUniformLocation(m_renderer->getShader().ID, "transform");
@@ -193,6 +204,12 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
         MOVE = !MOVE;
         std::cout << "Move: " << (MOVE ? "true" : "false") << " - at index " << RAND << std::endl;
     }
+
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+    {
+        RESET = !RESET;
+		std::cout << "Resetting all shapes" << std::endl;
+	}
 }
 
 // glfw: viewport to window adjustment
