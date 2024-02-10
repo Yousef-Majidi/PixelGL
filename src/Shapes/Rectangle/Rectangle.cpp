@@ -5,8 +5,9 @@
 
 #include "Rectangle.h"
 
-Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_center(center)
+Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_originalCenter(center)
 {
+	m_center = m_originalCenter;
 	m_transform = glm::mat4{ 1.0f };
 	generateVertices(center, size, color);
 	generateIndices();
@@ -41,9 +42,32 @@ const glm::mat4 Rectangle::getTransform() const
 	return this->m_transform;
 }
 
+const glm::vec3 Rectangle::getCenter() const
+{
+	return this->m_center;
+}
+
 void Rectangle::resetTransform()
 {
-	m_transform = glm::mat4{ 1.0f };
+	m_transform = glm::mat4(1.0f);
+}
+
+void Rectangle::resetPosition()
+{
+	moveTo(m_originalCenter);
+	m_center = m_originalCenter;
+}
+
+void Rectangle::resetScale()
+{
+	if (m_currentScale != 1.0f)
+	{
+		glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f / m_currentScale, 1.0f / m_currentScale, 1.0f));
+		glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
+		m_transform = translateBack * scale * translate * m_transform;
+		m_currentScale = 1.0f;
+	}
 }
 
 void Rectangle::rotate(float angle)
@@ -52,6 +76,26 @@ void Rectangle::rotate(float angle)
 	glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
 	m_transform = translateBack * rotate * translate * m_transform;
+}
+
+void Rectangle::scale(float scaleFactor)
+{
+	if (m_currentScale != scaleFactor)
+	{
+		glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor, scaleFactor, scaleFactor));
+		glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
+		m_transform = translateBack * scale * translate * m_transform;
+		m_currentScale = scaleFactor;
+	}
+}
+
+void Rectangle::moveTo(glm::vec3 newPosition)
+{
+	glm::vec3 translationVector = newPosition - m_center;
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translationVector);
+	m_transform = translationMatrix * m_transform;
+	m_center = newPosition;
 }
 
 const float Rectangle::getVerticesSize() const

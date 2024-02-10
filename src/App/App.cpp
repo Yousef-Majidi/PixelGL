@@ -16,8 +16,12 @@
 using std::string;
 
 /************DEBUG*************/
-static bool ROTATE = false;
 static unsigned int RAND = NULL;
+static bool ROTATE = false;
+static bool SCALE = false;
+static bool MOVE = false;
+static float R_ANGLE = 45.0f;
+static float S_FACTOR = 2.5f;
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -70,6 +74,13 @@ void App::init()
     /*****************ADD SHAPES HERE******************/
     /**************************************************/
 
+    // blue shape at the center
+    /*glm::vec3 coordinates = glm::vec3(0.0f, 0.0f, 0.0f);
+    float size = 0.3f;
+    glm::vec3 color = glm::vec3(0.0f, 0.0f, 1.0f);
+    Rectangle rectangle1(coordinates, size, color);
+    m_shapes.push_back(rectangle1);*/
+
     // purple
     glm::vec3 coordinates = glm::vec3(-0.85f, 0.85f, 0.0f);
     float size = 0.3f;
@@ -117,9 +128,34 @@ void App::render()
     for (Rectangle& shape : m_shapes)
     {
         if (ROTATE && &shape == &m_shapes.at(RAND))
-			shape.rotate(0.01f);
-        else
+        {
+            shape.rotate(R_ANGLE);
+        }
+
+        if (SCALE && &shape == &m_shapes.at(RAND))
+        {
+            shape.scale(S_FACTOR);
+        }
+
+        if (MOVE && &shape == &m_shapes.at(RAND))
+        {
+            glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+            shape.moveTo(center);
+        }
+
+        // Reset transform and scale if none of ROTATE, SCALE, or MOVE is true
+        if (!SCALE)
+        {
+            shape.resetScale();
+        }
+        if (!ROTATE)
+        {
             shape.resetTransform();
+        }
+        if (!MOVE)
+        {
+			shape.resetPosition();
+		}
 
         m_renderer->getShader().use();
         unsigned int transformLoc = glGetUniformLocation(m_renderer->getShader().ID, "transform");
@@ -136,17 +172,30 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
         std::cout << "Exiting the game..." << std::endl;
     }
 
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        ROTATE = !ROTATE;
-		std::cout << "Rotating the shapes at index " << RAND << std::endl;
-	}
-
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
         RAND = rand() % 4;
 		std::cout << "New index selected: " << RAND << std::endl;
 	}
+
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+        ROTATE = !ROTATE;
+		std::cout << "Rotate: " << ROTATE << " - at index " << RAND << std::endl;
+	}
+
+    if (key == GLFW_KEY_S && action == GLFW_PRESS)
+    {
+		SCALE = !SCALE;
+		S_FACTOR = SCALE ? 2.5f : 1.0f;
+        std::cout << "Scale: " << SCALE << " - at index " << RAND << std::endl;
+    }
+
+    if (key == GLFW_KEY_W && action == GLFW_PRESS)
+    {
+        MOVE = !MOVE;
+        std::cout << "Move: " << MOVE << " - at index " << RAND << std::endl;
+    }
 }
 
 // glfw: viewport to window adjustment
