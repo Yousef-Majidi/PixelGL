@@ -79,31 +79,28 @@ void App::init()
 	// purple
 	glm::vec3 coordinates = glm::vec3(-0.85f, 0.85f, 0.0f);
 	float size = 0.3f;
-	glm::vec3 color = glm::vec3(0.412f, 0.141f, 0.859f);
-	//Color puprple(0.412f, 0.141f, 0.859f, 1.0f);
-	//glm::vec3 colorVector = puprple.getColor();
-	Rectangle rectangle1(coordinates, size, color);
+	Color purple(0.412f, 0.141f, 0.859f);
+	Rectangle rectangle1(coordinates, size, purple);
 	m_shapes.push_back(rectangle1);
 
-	// pink 
+	// pink
 	glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
 	float size2 = 0.3f;
-	glm::vec3 color2 = glm::vec3(0.949f, 0.141f, 0.765f);
-	Rectangle rectangle2(coordinates2, size2, color2);
+	Rectangle rectangle2(coordinates2, size2, Color::MAGENTA);
 	m_shapes.push_back(rectangle2);
 
 	// yellow
-	glm::vec3 coordinates3 = glm::vec3(-0.85f, -0.85f, 0.0f);
+	glm::vec3 coordinates3 = glm::vec3(0.0f, 0.0f, 0.0f);
 	float size3 = 0.3f;
-	glm::vec3 color3 = glm::vec3(0.949f, 0.875f, 0.141f);
-	Rectangle rectangle3(coordinates3, size3, color3);
+	//glm::vec3 color3 = glm::vec3(0.949f, 0.875f, 0.141f);
+	Rectangle rectangle3(coordinates3, size3, Color::YELLOW);
 	m_shapes.push_back(rectangle3);
 
 	// green
 	glm::vec3 coordinates4 = glm::vec3(0.85f, -0.85f, 0.0f);
 	float size4 = 0.3f;
-	glm::vec3 color4 = glm::vec3(0.259f, 0.459f, 0.318f);
-	Rectangle rectangle4(coordinates4, size4, color4);
+	//glm::vec3 color4 = glm::vec3(0.259f, 0.459f, 0.318f);
+	Rectangle rectangle4(coordinates4, size4, Color::GREEN);
 	m_shapes.push_back(rectangle4);
 }
 

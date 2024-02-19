@@ -6,14 +6,14 @@
 
 using glm::vec3;
 
-const vec3 Color::RED = newColor(1.0f, 0.0f, 0.0f);
-const vec3 Color::GREEN = newColor(0.0f, 1.0f, 0.0f);
-const vec3 Color::BLUE = newColor(0.0f, 0.0f, 1.0f);
-const vec3 Color::WHITE = newColor(1.0f, 1.0f, 1.0f);
-const vec3 Color::BLACK = newColor(0.0f, 0.0f, 0.0f);
-const vec3 Color::YELLOW = newColor(1.0f, 1.0f, 0.0f);
-const vec3 Color::CYAN = newColor(0.0f, 1.0f, 1.0f);
-const vec3 Color::MAGENTA = newColor(1.0f, 0.0f, 1.0f);
+const Color Color::RED = Color(1.0f, 0.0f, 0.0f);
+const Color Color::GREEN = Color(0.0f, 1.0f, 0.0f);
+const Color Color::BLUE = Color(0.0f, 0.0f, 1.0f);
+const Color Color::WHITE = Color(1.0f, 1.0f, 1.0f);
+const Color Color::BLACK = Color(0.0f, 0.0f, 0.0f);
+const Color Color::YELLOW = Color(1.0f, 1.0f, 0.0f);
+const Color Color::CYAN = Color(0.0f, 1.0f, 1.0f);
+const Color Color::MAGENTA = Color(1.0f, 0.0f, 1.0f);
 
 Color::Color(float r, float g, float b, float a) : m_red(r), m_green(g), m_blue(b), m_alpha(a)
 {
@@ -24,11 +24,6 @@ float Color::randomFloat()
 {
 	// TODO: Not implemented
 	return float();
-}
-
-glm::vec3 Color::newColor(float r, float g, float b, float a)
-{
-	return vec3(r, g, b);
 }
 
 glm::vec3 Color::randomColor()

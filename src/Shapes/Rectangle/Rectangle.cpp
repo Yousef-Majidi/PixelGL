@@ -11,7 +11,6 @@ using glm::vec3;
 
 Rectangle::Rectangle(vec3 center, float size, Color color) : m_center(center), m_color(color)
 {
-	m_center = m_center;
 	m_transform = mat4{ 1.0f };
 	m_rotation = mat4{ 1.0f };
 	m_translation = mat4{ 1.0f };

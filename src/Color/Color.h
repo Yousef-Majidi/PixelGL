@@ -13,15 +13,14 @@ private:
 public:
 	Color() = default;
 	Color(float r, float g, float b, float a = 1.0f);
-	static const vec3 RED;
-	static const vec3 GREEN;
-	static const vec3 BLUE;
-	static const vec3 WHITE;
-	static const vec3 BLACK;
-	static const vec3 YELLOW;
-	static const vec3 CYAN;
-	static const vec3 MAGENTA;
-	static vec3 newColor(float r, float g, float b, float a = 1.0f);
+	static const Color RED;
+	static const Color GREEN;
+	static const Color BLUE;
+	static const Color WHITE;
+	static const Color BLACK;
+	static const Color YELLOW;
+	static const Color CYAN;
+	static const Color MAGENTA;
 	static vec3 randomColor();
 
 	vec3 getRGB() const;
