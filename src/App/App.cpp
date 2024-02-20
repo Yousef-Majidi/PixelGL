@@ -76,32 +76,43 @@ void App::init()
 	/*****************ADD SHAPES HERE******************/
 	/**************************************************/
 
-	// purple
-	glm::vec3 coordinates = glm::vec3(-0.85f, 0.85f, 0.0f);
-	float size = 0.3f;
-	Color purple(0.412f, 0.141f, 0.859f);
-	Rectangle rectangle1(coordinates, size, purple);
-	m_shapes.push_back(rectangle1);
+	float leftEdge = -0.90f;
+	float rightEdge = 0.90f;
+	float size = 0.2f;
+	float step = size;
+	int row = 0;
+	Color borderColor = Color::WHITE;
 
-	// pink
-	glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
-	float size2 = 0.3f;
-	Rectangle rectangle2(coordinates2, size2, Color::MAGENTA);
-	m_shapes.push_back(rectangle2);
+	Color colors[6] = {
+		Color::YELLOW,
+		Color::BLUE,
+		Color::CYAN,
+		Color::GREEN,
+		Color::MAGENTA,
+		Color::RED,
+	};
 
-	// yellow
-	glm::vec3 coordinates3 = glm::vec3(0.0f, 0.0f, 0.0f);
-	float size3 = 0.3f;
-	//glm::vec3 color3 = glm::vec3(0.949f, 0.875f, 0.141f);
-	Rectangle rectangle3(coordinates3, size3, Color::YELLOW);
-	m_shapes.push_back(rectangle3);
+	for (int row = 0; row <= 5; row++)
+	{
 
-	// green
-	glm::vec3 coordinates4 = glm::vec3(0.85f, -0.85f, 0.0f);
-	float size4 = 0.3f;
-	//glm::vec3 color4 = glm::vec3(0.259f, 0.459f, 0.318f);
-	Rectangle rectangle4(coordinates4, size4, Color::GREEN);
-	m_shapes.push_back(rectangle4);
+		for (float center = leftEdge; center <= rightEdge; center += step)
+		{
+			vec3 ctr = vec3(center, 0.90 - (size * row), 0.0f);
+			Rectangle border(ctr, size, borderColor);
+			addShape(border);
+			Rectangle block(ctr, size - 0.01f, colors[row]);
+			addShape(block);
+		}
+	}
+
+
+	for (float center = -0.15; center <= 0.15; center += 0.125f)
+	{
+		Rectangle platformBorder = Rectangle(vec3(center, -0.90f, 0.0f), 0.125f, Color::GREEN);
+		m_shapes.push_back(platformBorder);
+		Rectangle platform = Rectangle(vec3(center, -0.90f, 0.0f), 0.125f - 0.01f, Color::YELLOW);
+		m_shapes.push_back(platform);
+	}
 }
 
 void App::gameLoop()
