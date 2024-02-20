@@ -80,38 +80,35 @@ void App::init()
 	float leftEdge = -1.90f;
 	float rightEdge = 2.0f;
 	float size = 0.2f;
-	float step = size;
-	int row = 0;
-	Color borderColor = Color::WHITE;
-
-	Color colors[6] = {
+	Color colors[7] = {
 		Color::YELLOW,
 		Color::BLUE,
 		Color::CYAN,
 		Color::GREEN,
 		Color::MAGENTA,
 		Color::RED,
+		Color::WHITE,
 	};
 
 	for (int row = 0; row <= 5; row++)
 	{
-
-		for (float center = leftEdge; center <= rightEdge; center += step)
+		for (float pos = leftEdge; pos <= rightEdge; pos += size)
 		{
-			vec3 ctr = vec3(center, 1.90 - (size * row), 0.0f);
-			Rectangle border(ctr, size, borderColor);
+			vec3 center = vec3(pos, 1.90 - (size * row), 0.0f);
+			Rectangle border(center, size, colors[6]);
 			addShape(border);
-			Rectangle block(ctr, size - 0.01f, colors[row]);
+			Rectangle block(center, size - 0.01f, colors[row]);
 			addShape(block);
 		}
 	}
 
 
-	for (float center = -0.15; center <= 0.15; center += 0.125f)
+	for (float pos = -0.15; pos <= 0.15; pos += 0.125f)
 	{
-		Rectangle platformBorder = Rectangle(vec3(center, -1.90f, 0.0f), 0.125f, Color::GREEN);
+		vec3 center = vec3(pos, -1.90f, 0.0f);
+		Rectangle platformBorder = Rectangle(center, 0.125f, Color::GREEN);
 		m_shapes.push_back(platformBorder);
-		Rectangle platform = Rectangle(vec3(center, -1.90f, 0.0f), 0.125f - 0.01f, Color::YELLOW);
+		Rectangle platform = Rectangle(center, 0.115f, Color::YELLOW);
 		m_shapes.push_back(platform);
 	}
 
