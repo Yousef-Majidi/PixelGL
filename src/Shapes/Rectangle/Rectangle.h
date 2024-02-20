@@ -21,6 +21,7 @@ public:
 	const GLuint getEBO() const;
 	const GLuint getNumVertices() const;
 	const mat4 getTransform() const;
+	void render() const;
 	void resetRotation();
 	void resetPosition();
 	void resetScale();

@@ -77,8 +77,8 @@ void App::init()
 	/*****************ADD SHAPES HERE******************/
 	/**************************************************/
 
-	float leftEdge = -0.90f;
-	float rightEdge = 0.90f;
+	float leftEdge = -1.90f;
+	float rightEdge = 2.0f;
 	float size = 0.2f;
 	float step = size;
 	int row = 0;
@@ -98,7 +98,7 @@ void App::init()
 
 		for (float center = leftEdge; center <= rightEdge; center += step)
 		{
-			vec3 ctr = vec3(center, 0.90 - (size * row), 0.0f);
+			vec3 ctr = vec3(center, 1.90 - (size * row), 0.0f);
 			Rectangle border(ctr, size, borderColor);
 			addShape(border);
 			Rectangle block(ctr, size - 0.01f, colors[row]);
@@ -109,9 +109,9 @@ void App::init()
 
 	for (float center = -0.15; center <= 0.15; center += 0.125f)
 	{
-		Rectangle platformBorder = Rectangle(vec3(center, -0.90f, 0.0f), 0.125f, Color::GREEN);
+		Rectangle platformBorder = Rectangle(vec3(center, -1.90f, 0.0f), 0.125f, Color::GREEN);
 		m_shapes.push_back(platformBorder);
-		Rectangle platform = Rectangle(vec3(center, -0.90f, 0.0f), 0.125f - 0.01f, Color::YELLOW);
+		Rectangle platform = Rectangle(vec3(center, -1.90f, 0.0f), 0.125f - 0.01f, Color::YELLOW);
 		m_shapes.push_back(platform);
 	}
 
@@ -132,30 +132,24 @@ void App::render()
 	static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	glClearBufferfv(GL_COLOR, 0, black);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
+	m_renderer->getShader().setMat4("projection", projection);
+
 	for (Rectangle& shape : m_shapes)
 	{
-		//Add Projection
-		//Initialize the Matrice (model, view, projection)
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-
-		//Set the values of the matrices
+		//glm::mat4 view = glm::mat4(1.0f);
 		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		//view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-		//projection = glm::perspective(glm::radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 100.0f);
-		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-
 		m_renderer->getShader().use();
 		//We specify the uniform variables in the Vertex Shader
 		unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 		unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-		// We pass thev variables to the shaders (3 different ways)
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-		// note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
-		m_renderer->getShader().setMat4("projection", projection);
-		m_renderer->render(shape.getVAO(), shape.getEBO(), shape.getNumVertices());
+		// We pass the variables to the shaders
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape.getTransform()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
+		shape.render();
 	}
 }
 

@@ -48,6 +48,13 @@ const mat4 Rectangle::getTransform() const
 	return this->m_transform;
 }
 
+void Rectangle::render() const
+{
+	glBindVertexArray(this->VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+	glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+}
+
 void Rectangle::resetRotation()
 {
 	m_rotation = mat4(1.0f);
