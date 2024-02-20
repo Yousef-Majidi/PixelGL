@@ -24,6 +24,7 @@ static bool MOVE = false;
 static bool RESET = false;
 static float R_ANGLE = 5.0f;
 static float S_FACTOR = 1.0f;
+GLuint VBO, VAO, EBO;
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -113,6 +114,7 @@ void App::init()
 		Rectangle platform = Rectangle(vec3(center, -0.90f, 0.0f), 0.125f - 0.01f, Color::YELLOW);
 		m_shapes.push_back(platform);
 	}
+
 }
 
 void App::gameLoop()
@@ -132,48 +134,27 @@ void App::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (Rectangle& shape : m_shapes)
 	{
-		if (ROTATE && &shape == &m_shapes.at(RAND))
-		{
-			shape.rotate(R_ANGLE);
-		}
-		else
-		{
-			shape.resetRotation();
-		}
+		//Add Projection
+		//Initialize the Matrice (model, view, projection)
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
 
-		if (SCALE && &shape == &m_shapes.at(RAND))
-		{
-			shape.scale(S_FACTOR);
-		}
-		else
-		{
-			shape.resetScale();
-		}
-
-		if (MOVE && &shape == &m_shapes.at(RAND))
-		{
-			glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
-			shape.moveTo(center);
-		}
-		else
-		{
-			shape.resetPosition();
-		}
-
-		if (RESET)
-		{
-			shape.resetScale();
-			shape.resetRotation();
-			shape.resetPosition();
-			RESET = false;
-			ROTATE = false;
-			SCALE = false;
-			MOVE = false;
-		}
+		//Set the values of the matrices
+		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		//view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+		//projection = glm::perspective(glm::radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 100.0f);
+		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 
 		m_renderer->getShader().use();
-		unsigned int transformLoc = glGetUniformLocation(m_renderer->getShader().ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(shape.getTransform()));
+		//We specify the uniform variables in the Vertex Shader
+		unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
+		unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
+		// We pass thev variables to the shaders (3 different ways)
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+		// note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+		m_renderer->getShader().setMat4("projection", projection);
 		m_renderer->render(shape.getVAO(), shape.getEBO(), shape.getNumVertices());
 	}
 }
@@ -188,37 +169,7 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
 
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
-		RAND = rand() % 4;
-		std::cout << "New index selected: " << RAND << std::endl;
-	}
-
-	if (key == GLFW_KEY_R && action == GLFW_PRESS)
-	{
-		ROTATE = !ROTATE;
-		std::cout << "Rotate: " << (ROTATE ? "true" : "false") << " - at index " << RAND << std::endl;
-	}
-
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-	{
-		SCALE = !SCALE;
-		if (!SCALE)
-			S_FACTOR = 1.0f;
-		else
-			S_FACTOR = 2.5f;
-		std::cout << "Scale: " << (SCALE ? "true" : "false") << " - at index " << RAND << std::endl;
-		std::cout << "Scale factor: " << S_FACTOR << std::endl;
-	}
-
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-	{
-		MOVE = !MOVE;
-		std::cout << "Move: " << (MOVE ? "true" : "false") << " - at index " << RAND << std::endl;
-	}
-
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
-	{
-		RESET = !RESET;
-		std::cout << "Resetting all shapes" << std::endl;
+		std::cout << "Moving the ball" << std::endl;
 	}
 }
 
