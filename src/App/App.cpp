@@ -7,10 +7,12 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "../Color/Color.h"
 #include "../Renderer/Renderer.h"
 #include "../Shader/shaderinit.h"
+#include "../Shapes/Circle/Circle.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 #include "App.h"
 
@@ -140,14 +142,26 @@ void App::render()
 		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		//view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 		m_renderer->getShader().use();
-		//We specify the uniform variables in the Vertex Shader
 		unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 		unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-		// We pass the variables to the shaders
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape.getTransform()));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 		shape.render();
 	}
+
+	std::vector<Circle> circles{};
+	Circle ball = Circle(vec3(-0.025f, -1.78f, 0.0f), 0.5f, Color::RED);
+	circles.push_back(ball);
+	for (Circle& circle : circles)
+	{
+		m_renderer->getShader().use();
+		/*unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
+		unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(circle.getTransform()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);*/
+		circle.render();
+	}
+
 }
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)

@@ -137,7 +137,9 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Shapes\Circle\Circle.cpp" />
     <ClCompile Include="src\Shapes\Rectangle\Rectangle.cpp" />
+    <ClCompile Include="src\Shapes\Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -149,7 +151,9 @@
     <ClInclude Include="src\Color\Color.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\shaderinit.h" />
+    <ClInclude Include="src\Shapes\Circle\Circle.h" />
     <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
+    <ClInclude Include="src\Shapes\Shape.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
