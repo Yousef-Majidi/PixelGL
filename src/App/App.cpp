@@ -141,6 +141,7 @@ void App::render()
 
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 
 	for (Shape* shape : m_shapes)
 	{
@@ -149,7 +150,6 @@ void App::render()
 			shape->translate(VELOCITY);
 		}
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 		shape->render();
 	}
 }

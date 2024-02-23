@@ -19,8 +19,6 @@ public:
 	~Shape();
 
 	virtual void render() const = 0;
-	virtual void generateVertices(vec3 center, float size, vec3 color) = 0;
-	virtual void generateBuffers() = 0;
 
 	virtual void resetRotation();
 	virtual void resetPosition();
@@ -29,14 +27,12 @@ public:
 	virtual void scale(float scaleFactor);
 	virtual void translateTo(vec3 newPos);
 	virtual void translate(vec3 velocity);
-	virtual void updateTransform();
-	const GLuint getNumVertices() const;
-	const mat4 getTransform() const;
 	const float getVerticesSize() const;
+	const mat4 getTransform() const;
+	const GLuint getNumVertices() const;
 	const GLuint getVAO() const;
 	const GLuint getEBO() const;
 	const GLuint getVBO() const;
-
 
 protected:
 	Color m_color;
@@ -49,5 +45,8 @@ protected:
 	GLuint VAO{}, VBO{}, EBO{};
 	vector<float> m_vertices{};
 
+	virtual void updateTransform();
+	virtual void generateVertices(vec3 center, float size, vec3 color) = 0;
+	virtual void generateBuffers() = 0;
 };
 #endif // !SHAPE_H

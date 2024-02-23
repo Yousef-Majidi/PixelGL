@@ -1,7 +1,9 @@
 #include <cmath>
 #include <glad/glad.h>
 #include <glm/ext/vector_float3.hpp>
+#include <memory>
 #include <utility>
+#include <vector>
 #include "../../Color/Color.h"
 #include "../Shape.h"
 #include "Circle.h"
@@ -25,6 +27,7 @@ void Circle::generateVertices(vec3 center, float size, vec3 color)
 {
 	const GLuint numVertices = 360;
 	float radius = std::max<float>(size, 0.05f);
+	m_vertices.reserve(static_cast<std::vector<float, std::allocator<float>>::size_type>(numVertices) * 6);
 	for (GLuint i = 0; i < numVertices; i++)
 	{
 		float angle = 2.0f * 3.14159f * i / numVertices;
