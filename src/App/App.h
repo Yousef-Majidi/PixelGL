@@ -8,6 +8,7 @@
 
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Rectangle/Rectangle.h"
+#include "../Shapes/Shape.h"
 
 class App
 {
@@ -16,13 +17,13 @@ public:
 	App(unsigned int, unsigned int, const char*, const char*);
 	~App();
 	void run();
-	void addShape(const Rectangle& shape);
+	void addShape(Shape* shape);
 
 private:
 	const char* m_vertexShaderPath = nullptr;
 	const char* m_fragmentShaderPath = nullptr;
 	GLFWwindow* m_window{};
-	std::vector<Rectangle> m_shapes{};
+	std::vector<Shape*> m_shapes{};
 	std::unique_ptr<Renderer> m_renderer;
 
 	void createWindow(unsigned int, unsigned int);

@@ -11,41 +11,41 @@ using std::vector;
 using glm::mat4;
 using glm::vec3;
 
-class Rectangle
+class Rectangle : public Shape
 {
 public:
-	Rectangle() {};
+	Rectangle() = delete;
 	Rectangle(vec3 center, float size, Color color);
 	~Rectangle();
 
-	const GLuint getVAO() const;
-	const GLuint getEBO() const;
-	const GLuint getNumVertices() const;
-	const mat4 getTransform() const;
-	void render() const;
-	void resetRotation();
-	void resetPosition();
-	void resetScale();
-	void rotate(float angle);
-	void scale(float scaleFactor);
-	void moveTo(vec3 newPosition);
+	//const GLuint getVAO() const;
+	//const GLuint getEBO() const;
+	//const GLuint getNumVertices() const;
+	//const mat4 getTransform() const;
+	void render() const override;
+	//void resetRotation();
+	//void resetPosition();
+	//void resetScale();
+	//void rotate(float angle);
+	//void scale(float scaleFactor);
+	//void moveTo(vec3 newPosition);
 private:
-	GLuint VAO{}, VBO{}, EBO{};
-	GLuint m_numVertices{};
-	vector<float> m_vertices;
+	//GLuint VAO{}, VBO{}, EBO{};
+	//GLuint m_numVertices{};
+	//vector<float> m_vertices;
 	vector<unsigned int> m_indices;
-	vec3 m_center{};
-	mat4 m_transform{};
-	mat4 m_rotation{};
-	mat4 m_translation{};
-	mat4 m_scale{};
-	Color m_color{};
+	//vec3 m_center{};
+	//mat4 m_transform{};
+	//mat4 m_rotation{};
+	//mat4 m_translation{};
+	//mat4 m_scale{};
+	//Color m_color{};
 
-	const float getVerticesSize() const;
+	//const float getVerticesSize() const;
 	const unsigned int getIndicesSize() const;
-	void generateVertices(vec3 center, float size, vec3 color);
+	void generateVertices(vec3 center, float size, vec3 color) override;
 	void generateIndices();
-	void generateBuffers();
-	void updateTransform();
+	void generateBuffers() override;
+	//void updateTransform();
 };
 #endif // !RECTANGLE_H

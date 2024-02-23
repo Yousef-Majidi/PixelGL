@@ -43,10 +43,10 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="src\Shader\shader.fs">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </None>
     <None Include="src\Shader\shader.vs">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

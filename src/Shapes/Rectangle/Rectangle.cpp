@@ -4,17 +4,18 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../../Color/Color.h"
+#include "../Shape.h"
 #include "Rectangle.h"
 
 using glm::mat4;
 using glm::vec3;
 
-Rectangle::Rectangle(vec3 center, float size, Color color) : m_center(center), m_color(color)
+Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, size, color)
 {
-	m_transform = mat4{ 1.0f };
-	m_rotation = mat4{ 1.0f };
-	m_translation = mat4{ 1.0f };
-	m_scale = mat4{ 1.0f };
+	//m_transform = mat4{ 1.0f };
+	//m_rotation = mat4{ 1.0f };
+	//m_translation = mat4{ 1.0f };
+	//m_scale = mat4{ 1.0f };
 	generateVertices(center, size, color.getRGB());
 	generateIndices();
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
@@ -28,25 +29,25 @@ Rectangle::~Rectangle()
 	glDeleteBuffers(1, &this->VBO);*/
 }
 
-const GLuint Rectangle::getVAO() const
-{
-	return this->VAO;
-}
+//const GLuint Rectangle::getVAO() const
+//{
+//	return this->VAO;
+//}
 
-const GLuint Rectangle::getEBO() const
-{
-	return this->EBO;
-}
+//const GLuint Rectangle::getEBO() const
+//{
+//	return this->EBO;
+//}
 
-const GLuint Rectangle::getNumVertices() const
-{
-	return this->m_numVertices;
-}
+//const GLuint Rectangle::getNumVertices() const
+//{
+//	return this->m_numVertices;
+//}
 
-const mat4 Rectangle::getTransform() const
-{
-	return this->m_transform;
-}
+//const mat4 Rectangle::getTransform() const
+//{
+//	return this->m_transform;
+//}
 
 void Rectangle::render() const
 {
@@ -55,53 +56,53 @@ void Rectangle::render() const
 	glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
 
-void Rectangle::resetRotation()
-{
-	m_rotation = mat4(1.0f);
-	updateTransform();
-}
+//void Rectangle::resetRotation()
+//{
+//	m_rotation = mat4(1.0f);
+//	updateTransform();
+//}
 
-void Rectangle::resetPosition()
-{
-	m_translation = mat4(1.0f);
-	updateTransform();
-}
+//void Rectangle::resetPosition()
+//{
+//	m_translation = mat4(1.0f);
+//	updateTransform();
+//}
 
-void Rectangle::resetScale()
-{
-	m_scale = mat4(1.0f);
-	updateTransform();
-}
+//void Rectangle::resetScale()
+//{
+//	m_scale = mat4(1.0f);
+//	updateTransform();
+//}
 
-void Rectangle::rotate(float angle)
-{
-	mat4 translate = glm::translate(mat4(1.0f), -m_center);
-	mat4 rotate = glm::rotate(mat4(1.0f), glm::radians(angle), vec3(0.0f, 0.0f, 1.0f));
-	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
-	m_rotation = translateBack * rotate * translate * m_rotation;
-	updateTransform();
-}
+//void Rectangle::rotate(float angle)
+//{
+//	mat4 translate = glm::translate(mat4(1.0f), -m_center);
+//	mat4 rotate = glm::rotate(mat4(1.0f), glm::radians(angle), vec3(0.0f, 0.0f, 1.0f));
+//	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
+//	m_rotation = translateBack * rotate * translate * m_rotation;
+//	updateTransform();
+//}
 
-void Rectangle::scale(float scaleFactor)
-{
-	mat4 translate = glm::translate(mat4(1.0f), -m_center);
-	mat4 scale = glm::scale(mat4(1.0f), vec3(scaleFactor, scaleFactor, scaleFactor));
-	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
-	m_scale = translateBack * scale * translate;
-	updateTransform();
-}
+//void Rectangle::scale(float scaleFactor)
+//{
+//	mat4 translate = glm::translate(mat4(1.0f), -m_center);
+//	mat4 scale = glm::scale(mat4(1.0f), vec3(scaleFactor, scaleFactor, scaleFactor));
+//	mat4 translateBack = glm::translate(mat4(1.0f), m_center);
+//	m_scale = translateBack * scale * translate;
+//	updateTransform();
+//}
 
-void Rectangle::moveTo(vec3 newPosition)
-{
-	vec3 translationVector = newPosition - m_center;
-	m_translation = glm::translate(mat4(1.0f), translationVector);
-	updateTransform();
-}
+//void Rectangle::moveTo(vec3 newPosition)
+//{
+//	vec3 translationVector = newPosition - m_center;
+//	m_translation = glm::translate(mat4(1.0f), translationVector);
+//	updateTransform();
+//}
 
-const float Rectangle::getVerticesSize() const
-{
-	return m_vertices.size() * sizeof(float);
-}
+//const float Rectangle::getVerticesSize() const
+//{
+//	return m_vertices.size() * sizeof(float);
+//}
 
 const unsigned int Rectangle::getIndicesSize() const
 {
@@ -153,7 +154,7 @@ void Rectangle::generateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Rectangle::updateTransform()
-{
-	m_transform = m_translation * m_rotation * m_scale;
-}
+//void Rectangle::updateTransform()
+//{
+//	m_transform = m_translation * m_rotation * m_scale;
+//}
