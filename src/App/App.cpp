@@ -1,34 +1,25 @@
-#include <cstdlib>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <typeinfo>
-#include <vector>
 
 #include "../Color/Color.h"
 #include "../Renderer/Renderer.h"
-#include "../Shader/shaderinit.h"
 #include "../Shapes/Circle/Circle.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shapes/Shape.h"
 #include "App.h"
 
 using std::string;
+using glm::vec3;
 
 /************DEBUG*************/
-static unsigned int RAND = 0;
-static bool ROTATE = false;
-static bool SCALE = false;
-static bool MOVE = false;
-static bool RESET = false;
-static float R_ANGLE = 5.0f;
-static float S_FACTOR = 1.0f;
-GLuint VBO, VAO, EBO;
+static bool START = false;
+static vec3 VELOCITY = vec3(0.0f, 0.03f, 0.0f);
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -38,11 +29,16 @@ App::App(unsigned int width, unsigned int height, const char* vertextShaderPath,
 	createWindow(width, height);
 	m_renderer->initializeGLAD();
 	m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
-	init();
+	initializesShapes();
 }
 
 App::~App()
 {
+	for (Shape* shape : m_shapes)
+	{
+		delete shape;
+	}
+
 	if (this->m_window)
 	{
 		glfwDestroyWindow(this->m_window);
@@ -75,12 +71,11 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 	glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
-void App::init()
+void App::initializesShapes()
 {
 	/**************************************************/
 	/*****************ADD SHAPES HERE******************/
 	/**************************************************/
-
 	float leftEdge = -1.90f;
 	float rightEdge = 2.0f;
 	float size = 0.2f;
@@ -100,9 +95,7 @@ void App::init()
 		for (float pos = leftEdge; pos <= rightEdge; pos += size)
 		{
 			vec3 center = vec3(pos, 1.90 - (size * row), 0.0f);
-			// Rectangle border(center, size, colors[6]);
 			addShape(new Rectangle(center, size, colors[6]));
-			// Rectangle block(center, size - 0.01f, colors[row]);
 			addShape(new Rectangle(center, size - 0.01f, colors[row]));
 		}
 	}
@@ -111,19 +104,13 @@ void App::init()
 	for (float pos = -0.15; pos <= 0.15; pos += 0.125f)
 	{
 		vec3 center = vec3(pos, -1.90f, 0.0f);
-		//Rectangle platformBorder = Rectangle(center, 0.125f, Color::GREEN);
 		addShape(new Rectangle(center, 0.125f, Color::GREEN));
-		// Rectangle platform = Rectangle(center, 0.115f, Color::YELLOW);
 		addShape(new Rectangle(center, 0.115f, Color::YELLOW));
 	}
 
 	// Ball
 	vec3 loc = vec3(0.0f, -1.78f, 0.0f);
 	addShape(new Circle(loc, 0.05f, Color::RED));
-	for (Shape* shape : m_shapes)
-	{
-
-	}
 }
 
 void App::gameLoop()
@@ -138,44 +125,26 @@ void App::gameLoop()
 
 void App::render()
 {
-	static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
-	glClearBufferfv(GL_COLOR, 0, black);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
 	m_renderer->getShader().setMat4("projection", projection);
 	m_renderer->getShader().use();
+
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
 
 	for (Shape* shape : m_shapes)
 	{
-		if (typeid(*shape) == typeid(Circle))
+		if (START && typeid(*shape) == typeid(Circle))
 		{
-			shape->moveTo(vec3(0.0f, 0.0f, 0.0f));
+			shape->translate(VELOCITY);
 		}
-		//glm::mat4 view = glm::mat4(1.0f);
-		//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		//view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 		shape->render();
 	}
-
-	//std::vector<Circle> circles{};
-	//Circle ball = Circle(vec3(-0.025f, -1.78f, 0.0f), 0.5f, Color::RED);
-	//circles.push_back(ball);
-	//for (Circle& circle : circles)
-	//{
-	//	//m_renderer->getShader().use();
-	//	/*unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
-	//	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-	//	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(circle.getTransform()));
-	//	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);*/
-	//	circle.render();
-	//}
-
 }
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -188,7 +157,7 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
 
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
-		std::cout << "Moving the ball" << std::endl;
+		START = !START;
 	}
 }
 

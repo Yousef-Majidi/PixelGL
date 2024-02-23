@@ -1,4 +1,6 @@
 #include <glad/glad.h>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "../Color/Color.h"
 #include "Shape.h"
@@ -16,7 +18,8 @@ Shape::Shape(vec3 center, float size, Color color) : m_center(center), m_color(c
 
 Shape::~Shape()
 {
-	// TODO: Figure this out later. Shapes are created in the wrong scope so get they get deleted before render and their buffers get deleted
+	glDeleteVertexArrays(1, &this->VAO);
+	glDeleteBuffers(1, &this->VBO);
 }
 
 void Shape::resetRotation()
@@ -55,11 +58,23 @@ void Shape::scale(float scaleFactor)
 	updateTransform();
 }
 
-void Shape::moveTo(vec3 newPos)
+void Shape::translateTo(vec3 newPos)
 {
 	vec3 translationVector = newPos - m_center;
 	m_translation = glm::translate(mat4(1.0f), translationVector);
 	updateTransform();
+}
+
+void Shape::translate(vec3 velocity)
+{
+	m_center += velocity;
+	m_translation = glm::translate(m_translation, velocity);
+	updateTransform();
+}
+
+void Shape::updateTransform()
+{
+	m_transform = m_translation * m_rotation * m_scale;
 }
 
 const GLuint Shape::getNumVertices() const
@@ -75,11 +90,6 @@ const mat4 Shape::getTransform() const
 const float Shape::getVerticesSize() const
 {
 	return this->m_vertices.size() * sizeof(float);
-}
-
-void Shape::updateTransform()
-{
-	m_transform = m_translation * m_rotation * m_scale;
 }
 
 const GLuint Shape::getVAO() const

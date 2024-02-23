@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "../Renderer/Renderer.h"
-#include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shapes/Shape.h"
 
 class App
@@ -27,7 +26,7 @@ private:
 	std::unique_ptr<Renderer> m_renderer;
 
 	void createWindow(unsigned int, unsigned int);
-	void init();
+	void initializesShapes();
 	void gameLoop();
 	void render();
 

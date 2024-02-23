@@ -2,7 +2,8 @@
 #define SHAPE_H
 
 #include <glad/glad.h>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <vector>
 #include "../Color/Color.h"
 
@@ -15,7 +16,7 @@ class Shape
 public:
 	Shape() = delete;
 	Shape(vec3 center, float size, Color color);
-	virtual ~Shape();
+	~Shape();
 
 	virtual void render() const = 0;
 	virtual void generateVertices(vec3 center, float size, vec3 color) = 0;
@@ -26,11 +27,12 @@ public:
 	virtual void resetScale();
 	virtual void rotate(float angle);
 	virtual void scale(float scaleFactor);
-	virtual void moveTo(vec3 newPos);
+	virtual void translateTo(vec3 newPos);
+	virtual void translate(vec3 velocity);
+	virtual void updateTransform();
 	const GLuint getNumVertices() const;
 	const mat4 getTransform() const;
 	const float getVerticesSize() const;
-	void updateTransform();
 	const GLuint getVAO() const;
 	const GLuint getEBO() const;
 	const GLuint getVBO() const;

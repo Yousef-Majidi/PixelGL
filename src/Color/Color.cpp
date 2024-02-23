@@ -1,7 +1,4 @@
-#include <cstdlib>
-#include <glm/glm.hpp>
-#include <iostream>
-#include <time.h>
+#include <glm/ext/vector_float3.hpp>
 #include "Color.h"
 
 using glm::vec3;
@@ -26,7 +23,7 @@ float Color::randomFloat()
 	return float();
 }
 
-glm::vec3 Color::randomColor()
+vec3 Color::randomColor()
 {
 	// TODO: Not implemented
 	return vec3();
