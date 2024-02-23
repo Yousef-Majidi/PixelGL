@@ -16,12 +16,14 @@ class Rectangle : public Shape
 public:
 	Rectangle() = delete;
 	Rectangle(vec3 center, float size, Color color);
+	Rectangle(vec3 center, float height, float width, Color color);
 
 	void render() const override;
 private:
 	vector<unsigned int> m_indices;
 
 	void generateVertices(vec3 center, float size, vec3 color) override;
+	void generateVertices(vec3 center, float height, float width, vec3 color);
 	void generateBuffers() override;
 	void generateIndices();
 	const unsigned int getIndicesSize() const;

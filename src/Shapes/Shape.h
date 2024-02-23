@@ -15,7 +15,7 @@ class Shape
 {
 public:
 	Shape() = delete;
-	Shape(vec3 center, float size, Color color);
+	Shape(vec3 center, Color color);
 	~Shape();
 
 	virtual void render() const = 0;

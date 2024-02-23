@@ -76,41 +76,48 @@ void App::initializesShapes()
 	/**************************************************/
 	/*****************ADD SHAPES HERE******************/
 	/**************************************************/
-	float leftEdge = -1.90f;
-	float rightEdge = 2.0f;
-	float size = 0.2f;
 	Color colors[7] = {
-		Color::YELLOW,
-		Color::BLUE,
-		Color::CYAN,
-		Color::GREEN,
-		Color::MAGENTA,
-		Color::RED,
-		Color::WHITE,
+		Color(0.91,0.84,0.34),	// yellow
+		Color(0.16,0.45,0.45),	// blue
+		Color(0.66,0.08,0.08),	// red
+		Color(0.36,0.6,0.11),	// green
+		Color(0.5,0.05,0.59),	// purple
+		Color(1.0,0.52,0.15),	// orange
 	};
+	vec3 center{};
 
 	// Blocks
-	for (int row = 0; row <= 5; row++)
+	int numBlocksPerRow = 9;
+	int numBlocksPerColumn = 6;
+	float blockWidth = 0.35f;
+	float blockHeight = 0.2f;
+	float borderMargin = 0.05f;
+
+	float totalWidth = numBlocksPerRow * blockWidth + (numBlocksPerRow - 1) * borderMargin;
+	float totalHeight = numBlocksPerColumn * blockHeight + (numBlocksPerColumn - 1) * borderMargin;
+
+	float startPosX = -1.0f + (2.0f - totalWidth) / 2 + blockWidth / 2;
+	float startPosY = 1.0f - (2.0f - totalHeight) / 2 - blockHeight / 2 + 1.2f;
+
+	for (int i = 0; i < numBlocksPerColumn; i++)
 	{
-		for (float pos = leftEdge; pos <= rightEdge; pos += size)
+		for (int j = 0; j < numBlocksPerRow; j++)
 		{
-			vec3 center = vec3(pos, 1.90 - (size * row), 0.0f);
-			addShape(new Rectangle(center, size, colors[6]));
-			addShape(new Rectangle(center, size - 0.01f, colors[row]));
+			float centerX = startPosX + j * (blockWidth + borderMargin);
+			float centerY = startPosY - i * (blockHeight + borderMargin);
+			center = vec3(centerX, centerY, 0.0f);
+			addShape(new Rectangle(center, blockHeight, blockWidth, colors[i]));
 		}
 	}
 
 	// Platform
-	for (float pos = -0.15; pos <= 0.15; pos += 0.125f)
-	{
-		vec3 center = vec3(pos, -1.90f, 0.0f);
-		addShape(new Rectangle(center, 0.125f, Color::GREEN));
-		addShape(new Rectangle(center, 0.115f, Color::YELLOW));
-	}
+	center = vec3(0.0f, -1.85f, 0.0f);
+	addShape(new Rectangle(center, 0.20, 0.8, colors[3]));		// green border
+	addShape(new Rectangle(center, 0.15, 0.75, colors[0]));	// yellow platform
 
 	// Ball
-	vec3 loc = vec3(0.0f, -1.78f, 0.0f);
-	addShape(new Circle(loc, 0.05f, Color::RED));
+	vec3 loc = vec3(0.0f, -1.68f, 0.0f);
+	addShape(new Circle(loc, 0.05f, Color(0.81, 0.02, 0.24)));	// red ball
 }
 
 void App::gameLoop()

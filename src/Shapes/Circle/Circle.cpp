@@ -8,7 +8,7 @@
 
 using glm::vec3;
 
-Circle::Circle(vec3 center, float size, Color color) : Shape(center, size, color)
+Circle::Circle(vec3 center, float size, Color color) : Shape(center, color)
 {
 	generateVertices(center, size, color.getRGB());
 	generateBuffers();

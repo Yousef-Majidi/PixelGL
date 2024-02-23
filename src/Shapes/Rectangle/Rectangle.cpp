@@ -8,9 +8,16 @@
 using glm::mat4;
 using glm::vec3;
 
-Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, size, color)
+Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, color)
 {
 	generateVertices(center, size, color.getRGB());
+	generateIndices();
+	generateBuffers();
+}
+
+Rectangle::Rectangle(vec3 center, float height, float width, Color color) : Shape(center, color)
+{
+	generateVertices(center, height, width, color.getRGB());
 	generateIndices();
 	generateBuffers();
 }
@@ -31,6 +38,19 @@ void Rectangle::generateVertices(vec3 center, float size, vec3 color)
 		center.x - halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top left
 		center.x - halfSize, center.y - halfSize, center.z, color.r, color.g, color.b, // bottom left
 		center.x + halfSize, center.y - halfSize, center.z, color.r, color.g, color.b // bottom right
+	};
+}
+
+void Rectangle::generateVertices(vec3 center, float height, float width, vec3 color)
+{
+	float halfHeight = height / 2.0f;
+	float halfWidth = width / 2.0f;
+	m_vertices =
+	{
+		center.x + halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top right
+		center.x - halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top left
+		center.x - halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b, // bottom left
+		center.x + halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b // bottom right
 	};
 }
 

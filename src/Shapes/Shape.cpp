@@ -8,7 +8,7 @@
 using glm::vec3;
 using glm::mat4;
 
-Shape::Shape(vec3 center, float size, Color color) : m_center(center), m_color(color)
+Shape::Shape(vec3 center, Color color) : m_center(center), m_color(color)
 {
 	m_transform = mat4{ 1.0f };
 	m_rotation = mat4{ 1.0f };
