@@ -72,14 +72,9 @@ void Shape::translate(vec3 velocity)
 	updateTransform();
 }
 
-void Shape::updateTransform()
+const float Shape::getVerticesSize() const
 {
-	m_transform = m_translation * m_rotation * m_scale;
-}
-
-const GLuint Shape::getNumVertices() const
-{
-	return this->m_numVertices;
+	return this->m_vertices.size() * sizeof(float);
 }
 
 const mat4 Shape::getTransform() const
@@ -87,9 +82,9 @@ const mat4 Shape::getTransform() const
 	return this->m_transform;
 }
 
-const float Shape::getVerticesSize() const
+const GLuint Shape::getNumVertices() const
 {
-	return this->m_vertices.size() * sizeof(float);
+	return this->m_numVertices;
 }
 
 const GLuint Shape::getVAO() const
@@ -105,4 +100,9 @@ const GLuint Shape::getEBO() const
 const GLuint Shape::getVBO() const
 {
 	return this->VBO;
+}
+
+void Shape::updateTransform()
+{
+	m_transform = m_translation * m_rotation * m_scale;
 }

@@ -34,8 +34,8 @@ void Rectangle::generateVertices(vec3 center, float size, vec3 color)
 	float halfSize = size / 2.0f;
 	m_vertices =
 	{
-		center.x + halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top right
 		center.x - halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top left
+		center.x + halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top right
 		center.x - halfSize, center.y - halfSize, center.z, color.r, color.g, color.b, // bottom left
 		center.x + halfSize, center.y - halfSize, center.z, color.r, color.g, color.b // bottom right
 	};
