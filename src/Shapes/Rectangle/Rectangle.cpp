@@ -1,104 +1,35 @@
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
+#include "../../Color/Color.h"
+#include "../Shape.h"
 #include "Rectangle.h"
 
-Rectangle::Rectangle(glm::vec3 center, float size, glm::vec3 color) : m_center(center)
+using glm::mat4;
+using glm::vec3;
+
+Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, color)
 {
-	m_center = m_center;
-	m_transform = glm::mat4{ 1.0f };
-	m_rotation = glm::mat4{ 1.0f };
-	m_translation = glm::mat4{ 1.0f };
-	m_scale = glm::mat4{ 1.0f };
-	generateVertices(center, size, color);
+	generateVertices(center, size, color.getRGB());
 	generateIndices();
-	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
 	generateBuffers();
 }
 
-Rectangle::~Rectangle()
+Rectangle::Rectangle(vec3 center, float height, float width, Color color) : Shape(center, color)
 {
-	// TODO: figure this out later
-	/*glDeleteVertexArrays(1, &this->VAO);
-	glDeleteBuffers(1, &this->VBO);*/
+	generateVertices(center, height, width, color.getRGB());
+	generateIndices();
+	generateBuffers();
 }
 
-const GLuint Rectangle::getVAO() const
+void Rectangle::render() const
 {
-	return this->VAO;
+	glBindVertexArray(this->VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+	glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
 }
 
-const GLuint Rectangle::getEBO() const
-{
-	return this->EBO;
-}
-
-const GLuint Rectangle::getNumVertices() const
-{
-	return this->m_numVertices;
-}
-
-const glm::mat4 Rectangle::getTransform() const
-{
-	return this->m_transform;
-}
-
-void Rectangle::resetRotation()
-{
-	m_rotation = glm::mat4(1.0f);
-	updateTransform();
-}
-
-void Rectangle::resetPosition()
-{
-	m_translation = glm::mat4(1.0f);
-	updateTransform();
-}
-
-void Rectangle::resetScale()
-{
-	m_scale = glm::mat4(1.0f);
-	updateTransform();
-}
-
-void Rectangle::rotate(float angle)
-{
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
-	glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
-	m_rotation = translateBack * rotate * translate * m_rotation;
-	updateTransform();
-}
-
-void Rectangle::scale(float scaleFactor)
-{
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), -m_center);
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), m_center);
-	m_scale = translateBack * scale * translate;
-	updateTransform();
-}
-
-void Rectangle::moveTo(glm::vec3 newPosition)
-{
-	glm::vec3 translationVector = newPosition - m_center;
-	m_translation = glm::translate(glm::mat4(1.0f), translationVector);
-	updateTransform();
-}
-
-const float Rectangle::getVerticesSize() const
-{
-	return m_vertices.size() * sizeof(float);
-}
-
-const unsigned int Rectangle::getIndicesSize() const
-{
-	return m_indices.size() * sizeof(unsigned int);
-}
-
-void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
+void Rectangle::generateVertices(vec3 center, float size, vec3 color)
 {
 	float halfSize = size / 2.0f;
 	m_vertices =
@@ -110,11 +41,16 @@ void Rectangle::generateVertices(glm::vec3 center, float size, glm::vec3 color)
 	};
 }
 
-void Rectangle::generateIndices()
+void Rectangle::generateVertices(vec3 center, float height, float width, vec3 color)
 {
-	m_indices = {
-		0, 1, 2,  
-		2, 3, 0   
+	float halfHeight = height / 2.0f;
+	float halfWidth = width / 2.0f;
+	m_vertices =
+	{
+		center.x + halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top right
+		center.x - halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top left
+		center.x - halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b, // bottom left
+		center.x + halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b // bottom right
 	};
 }
 
@@ -143,7 +79,16 @@ void Rectangle::generateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Rectangle::updateTransform()
+void Rectangle::generateIndices()
 {
-	m_transform = m_translation * m_rotation * m_scale;
+	m_indices = {
+		0, 1, 2,
+		2, 3, 0
+	};
+	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
+}
+
+const unsigned int Rectangle::getIndicesSize() const
+{
+	return m_indices.size() * sizeof(unsigned int);
 }

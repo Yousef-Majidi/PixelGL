@@ -1,44 +1,31 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include <glad/glad.h>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <vector>
+#include "../../Color/Color.h"
+#include "../Shape.h"
 
+using std::vector;
+using glm::mat4;
+using glm::vec3;
 
-class Rectangle
+class Rectangle : public Shape
 {
 public:
-	Rectangle() {};
-	Rectangle(glm::vec3 center, float size, glm::vec3 color);
-	~Rectangle();
+	Rectangle() = delete;
+	Rectangle(vec3 center, float size, Color color);
+	Rectangle(vec3 center, float height, float width, Color color);
 
-	const GLuint getVAO() const;
-	const GLuint getEBO() const;
-	const GLuint getNumVertices() const;
-	const glm::mat4 getTransform() const;
-	void resetRotation();
-	void resetPosition();
-	void resetScale();
-	void rotate(float angle);
-	void scale(float scaleFactor);
-	void moveTo(glm::vec3 newPosition);
+	void render() const override;
 private:
-	GLuint VAO{}, VBO{}, EBO{};
-	GLuint m_numVertices{};
-	std::vector<float> m_vertices;
-	std::vector<unsigned int> m_indices;
-	glm::vec3 m_center{};
-	glm::mat4 m_transform{};
-	glm::mat4 m_rotation{};
-	glm::mat4 m_translation{};
-	glm::mat4 m_scale{};
+	vector<unsigned int> m_indices;
 
-	const float getVerticesSize() const;
-	const unsigned int getIndicesSize() const;
-	void generateVertices(glm::vec3 center, float size, glm::vec3 color);
+	void generateVertices(vec3 center, float size, vec3 color) override;
+	void generateVertices(vec3 center, float height, float width, vec3 color);
+	void generateBuffers() override;
 	void generateIndices();
-	void generateBuffers();
-	void updateTransform();
+	const unsigned int getIndicesSize() const;
 };
 #endif // !RECTANGLE_H

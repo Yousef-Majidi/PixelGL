@@ -1,219 +1,175 @@
-#include <cstdlib>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
 #include <string>
 
+#include "../Color/Color.h"
 #include "../Renderer/Renderer.h"
-#include "../Shader/shaderinit.h"
+#include "../Shapes/Circle/Circle.h"
 #include "../Shapes/Rectangle/Rectangle.h"
+#include "../Shapes/Shape.h"
 #include "App.h"
 
 using std::string;
+using glm::vec3;
 
 /************DEBUG*************/
-static unsigned int RAND = 0;
-static bool ROTATE = false;
-static bool SCALE = false;
-static bool MOVE = false;
-static bool RESET = false;
-static float R_ANGLE = 45.0f;
-static float S_FACTOR = 1.0f;
+static bool START = false;
+static vec3 VELOCITY = vec3(0.0f, 0.03f, 0.0f);
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
 {
-    m_renderer = std::make_unique<Renderer>();
-    m_renderer->initializeGLFW();
-    createWindow(width, height);
-    m_renderer->initializeGLAD();
-    m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
-    init();
+	m_renderer = std::make_unique<Renderer>();
+	m_renderer->initializeGLFW();
+	createWindow(width, height);
+	m_renderer->initializeGLAD();
+	m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
+	initializesShapes();
 }
 
 App::~App()
 {
-    if (this->m_window)
-    {
-        glfwDestroyWindow(this->m_window);
-        glfwTerminate();
-    }
+	for (Shape* shape : m_shapes)
+	{
+		delete shape;
+	}
+
+	if (this->m_window)
+	{
+		glfwDestroyWindow(this->m_window);
+		glfwTerminate();
+	}
 }
 
 void App::run()
 {
-    gameLoop();
+	gameLoop();
 }
 
-void App::addShape(const Rectangle& shape)
+void App::addShape(Shape* shape)
 {
-    m_shapes.push_back(shape);
-}               
+	m_shapes.push_back(shape);
+}
 
 void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 {
-    this->m_window = glfwCreateWindow(screenWidth, screenHeight, "Scene", NULL, NULL);
-    if (!m_window)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return;
-    }
-    glfwMakeContextCurrent(this->m_window);
-    glfwSetWindowUserPointer(this->m_window, this);
-    glfwSetKeyCallback(this->m_window, keyCallback);
-    glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
+	this->m_window = glfwCreateWindow(screenWidth, screenHeight, "Scene", NULL, NULL);
+	if (!m_window)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return;
+	}
+	glfwMakeContextCurrent(this->m_window);
+	glfwSetWindowUserPointer(this->m_window, this);
+	glfwSetKeyCallback(this->m_window, keyCallback);
+	glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
-void App::init()
+void App::initializesShapes()
 {
-    /**************************************************/
-    /*****************ADD SHAPES HERE******************/
-    /**************************************************/
+	/**************************************************/
+	/*****************ADD SHAPES HERE******************/
+	/**************************************************/
+	Color colors[7] = {
+		Color(0.91,0.84,0.34),	// yellow
+		Color(0.16,0.45,0.45),	// blue
+		Color(0.66,0.08,0.08),	// red
+		Color(0.36,0.6,0.11),	// green
+		Color(0.5,0.05,0.59),	// purple
+		Color(1.0,0.52,0.15),	// orange
+	};
+	vec3 center{};
 
-    // purple
-    glm::vec3 coordinates = glm::vec3(-0.85f, 0.85f, 0.0f);
-    float size = 0.3f;
-    glm::vec3 color = glm::vec3(0.412f, 0.141f, 0.859f);
-    Rectangle rectangle1(coordinates, size, color); 
-    m_shapes.push_back(rectangle1);
+	// Blocks
+	int numBlocksPerRow = 9;
+	int numBlocksPerColumn = 6;
+	float blockWidth = 0.35f;
+	float blockHeight = 0.2f;
+	float borderMargin = 0.05f;
 
-    // pink 
-    glm::vec3 coordinates2 = glm::vec3(0.85f, 0.85f, 0.0f);
-    float size2 = 0.3f;
-    glm::vec3 color2 = glm::vec3(0.949f, 0.141f, 0.765f);
-    Rectangle rectangle2(coordinates2, size2, color2);
-    m_shapes.push_back(rectangle2);
+	float totalWidth = numBlocksPerRow * blockWidth + (numBlocksPerRow - 1) * borderMargin;
+	float totalHeight = numBlocksPerColumn * blockHeight + (numBlocksPerColumn - 1) * borderMargin;
 
-    // yellow
-    glm::vec3 coordinates3 = glm::vec3(-0.85f, -0.85f, 0.0f);
-    float size3 = 0.3f;
-    glm::vec3 color3 = glm::vec3(0.949f, 0.875f, 0.141f);
-    Rectangle rectangle3(coordinates3, size3, color3);
-    m_shapes.push_back(rectangle3);
+	float startPosX = -1.0f + (2.0f - totalWidth) / 2 + blockWidth / 2;
+	float startPosY = 1.0f - (2.0f - totalHeight) / 2 - blockHeight / 2 + 1.2f;
 
-    // green
-    glm::vec3 coordinates4 = glm::vec3(0.85f, -0.85f, 0.0f);
-    float size4 = 0.3f;
-    glm::vec3 color4 = glm::vec3(0.259f, 0.459f, 0.318f);
-    Rectangle rectangle4(coordinates4, size4, color4);
-    m_shapes.push_back(rectangle4);
+	for (int i = 0; i < numBlocksPerColumn; i++)
+	{
+		for (int j = 0; j < numBlocksPerRow; j++)
+		{
+			float centerX = startPosX + j * (blockWidth + borderMargin);
+			float centerY = startPosY - i * (blockHeight + borderMargin);
+			center = vec3(centerX, centerY, 0.0f);
+			addShape(new Rectangle(center, blockHeight, blockWidth, colors[i]));
+		}
+	}
+
+	// Platform
+	center = vec3(0.0f, -1.85f, 0.0f);
+	addShape(new Rectangle(center, 0.20, 0.8, colors[3]));		// green border
+	addShape(new Rectangle(center, 0.15, 0.75, colors[0]));	// yellow platform
+
+	// Ball
+	vec3 loc = vec3(0.0f, -1.68f, 0.0f);
+	addShape(new Circle(loc, 0.05f, Color(0.81, 0.02, 0.24)));	// red ball
 }
 
 void App::gameLoop()
 {
-    while (!glfwWindowShouldClose(this->m_window))
-    {
-        render();
-        glfwSwapBuffers(this->m_window);
-        glfwPollEvents();
-    }
+	while (!glfwWindowShouldClose(this->m_window))
+	{
+		render();
+		glfwSwapBuffers(this->m_window);
+		glfwPollEvents();
+	}
 }
 
 void App::render()
 {
-    static const float black[] = { 1.0f, 0.0f, 0.0f, 0.0f };
-    glClearBufferfv(GL_COLOR, 0, black);
-    glClear(GL_COLOR_BUFFER_BIT);
-    for (Rectangle& shape : m_shapes)
-    {
-        if (ROTATE && &shape == &m_shapes.at(RAND))
-        {
-            shape.rotate(R_ANGLE);
-        }
+	glClear(GL_COLOR_BUFFER_BIT);
 
-        if (SCALE && &shape == &m_shapes.at(RAND))
-        {
-            shape.scale(S_FACTOR);
-        }
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
+	m_renderer->getShader().setMat4("projection", projection);
+	m_renderer->getShader().use();
 
-        if (MOVE && &shape == &m_shapes.at(RAND))
-        {
-            glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
-            shape.moveTo(center);
-        }
+	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
+	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
 
-        // Reset transforms
-        if (!SCALE)
-        {
-            shape.resetScale();
-        }
-        if (!ROTATE)
-        {
-            shape.resetRotation();
-        }
-        if (!MOVE)
-        {
-			shape.resetPosition();
+	for (Shape* shape : m_shapes)
+	{
+		if (START && typeid(*shape) == typeid(Circle))
+		{
+			shape->translate(VELOCITY);
 		}
-        if (RESET)
-        {
-			shape.resetScale();
-            shape.resetRotation();
-            shape.resetPosition();
-            RESET = false;
-            ROTATE = false;
-            SCALE = false;
-            MOVE = false;
-		}
-
-        m_renderer->getShader().use();
-        unsigned int transformLoc = glGetUniformLocation(m_renderer->getShader().ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(shape.getTransform()));
-        m_renderer->render(shape.getVAO(), shape.getEBO(), shape.getNumVertices());
-    }
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
+		shape->render();
+	}
 }
 
 void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if ((key == GLFW_KEY_ESCAPE || key == GLFW_KEY_M) && action == GLFW_PRESS)
-    {
+	if ((key == GLFW_KEY_ESCAPE || key == GLFW_KEY_M) && action == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, true);
-        std::cout << "Exiting the game..." << std::endl;
-    }
-
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-        RAND = rand() % 4;
-		std::cout << "New index selected: " << RAND << std::endl;
+		std::cout << "Exiting the game..." << std::endl;
 	}
 
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        ROTATE = !ROTATE;
-		std::cout << "Rotate: " << (ROTATE ? "true" : "false") << " - at index " << RAND << std::endl;
-	}
-
-    if (key == GLFW_KEY_S && action == GLFW_PRESS)
-    {
-		SCALE = !SCALE;
-        if (!SCALE)
-            S_FACTOR = 1.0f;
-        else
-            S_FACTOR = 2.5f;
-        std::cout << "Scale: " << (SCALE ? "true" : "false") << " - at index " << RAND << std::endl;
-        std::cout << "Scale factor: " << S_FACTOR << std::endl;
-    }
-
-    if (key == GLFW_KEY_W && action == GLFW_PRESS)
-    {
-        MOVE = !MOVE;
-        std::cout << "Move: " << (MOVE ? "true" : "false") << " - at index " << RAND << std::endl;
-    }
-
-    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
-    {
-        RESET = !RESET;
-		std::cout << "Resetting all shapes" << std::endl;
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+	{
+		START = !START;
 	}
 }
 
 // glfw: viewport to window adjustment
 void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 }
