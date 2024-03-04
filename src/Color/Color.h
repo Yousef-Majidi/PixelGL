@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
-#include <glm/glm.hpp>
+
+#include <glm/ext/vector_float3.hpp>
+#include <glm/fwd.hpp>
 
 using glm::vec3;
 
