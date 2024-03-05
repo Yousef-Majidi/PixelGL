@@ -18,16 +18,22 @@ using std::string;
 using glm::vec3;
 
 /************DEBUG*************/
-static bool START = false;
-static vec3 VELOCITY = vec3(0.0f, 0.03f, 0.0f);
+// delta time
 static float DELTA_TIME = 0.0f;
 static float LAST_FRAME = 0.0f;
 
 // camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-// glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+static glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
+static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
+static glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+// mouse movement
+static bool firstMouse = true;
+static float yaw = -90.0f;
+static float pitch = 0.0f;
+static float lastX = 800.0f / 2.0;
+static float lastY = 600.0 / 2.0;
+static float FOV = 135.0f;
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -76,6 +82,8 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 	glfwMakeContextCurrent(this->m_window);
 	glfwSetWindowUserPointer(this->m_window, this);
 	glfwSetKeyCallback(this->m_window, keyCallback);
+	glfwSetCursorPosCallback(this->m_window, mouseCallback);
+	glfwSetScrollCallback(this->m_window, scrollCallback);
 	glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
@@ -142,13 +150,6 @@ void App::render()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	/*glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
-	m_renderer->getShader().setMat4("projection", projection);
-	m_renderer->getShader().use();*/
-
-
 	// get actual window size
 	int width, height;
 	glfwGetFramebufferSize(m_window, &width, &height);
@@ -162,12 +163,11 @@ void App::render()
 	m_renderer->getShader().setMat4("view", view);
 
 	// set up the projection matrix
-	glm::mat4 projection = glm::perspective(glm::radians(135.0f), aspectRatio, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
 	m_renderer->getShader().setMat4("projection", projection);
 
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-	// glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 	for (Shape* shape : m_shapes)
@@ -184,15 +184,53 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
 		glfwSetWindowShouldClose(window, true);
 		std::cout << "Exiting the game..." << std::endl;
 	}
-
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-	{
-		START = !START;
-	}
 }
 
 // glfw: viewport to window adjustment
 void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void App::mouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	lastX = xpos;
+	lastY = ypos;
+
+	float sensitivity = 0.1f; // a ratio that define how sensitive the mouse movement will be
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	// make sure that when pitch is out of bounds, screen doesn't get flipped
+	/*if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;*/
+
+	glm::vec3 front{};
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(front);
+}
+
+void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	cameraPos.z -= (float)yoffset;
+	if (cameraPos.z < 1.0f)
+		cameraPos.z = 1.0f;
+	if (cameraPos.z > 45.0f)
+		cameraPos.z = 45.0f;
 }

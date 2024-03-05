@@ -24,6 +24,7 @@
     <ProjectGuid>{1c204afc-d2ca-4462-84df-796bae81504d}</ProjectGuid>
     <RootNamespace>OpenGLTemplate</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PixelGL</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
