@@ -20,6 +20,14 @@ using glm::vec3;
 /************DEBUG*************/
 static bool START = false;
 static vec3 VELOCITY = vec3(0.0f, 0.03f, 0.0f);
+static float DELTA_TIME = 0.0f;
+static float LAST_FRAME = 0.0f;
+
+// camera
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+// glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -76,52 +84,26 @@ void App::initializesShapes()
 	/**************************************************/
 	/*****************ADD SHAPES HERE******************/
 	/**************************************************/
-	Color colors[7] = {
-		Color(0.91,0.84,0.34),	// yellow
-		Color(0.16,0.45,0.45),	// blue
-		Color(0.66,0.08,0.08),	// red
-		Color(0.36,0.6,0.11),	// green
-		Color(0.5,0.05,0.59),	// purple
-		Color(1.0,0.52,0.15),	// orange
-	};
-	vec3 center{};
+	Color yellow(0.91, 0.84, 0.34);
+	Color blue(0.16, 0.45, 0.45);
+	Color red(0.66, 0.08, 0.08);
+	Color green(0.36, 0.6, 0.11);
 
-	// Blocks
-	int numBlocksPerRow = 9;
-	int numBlocksPerColumn = 6;
-	float blockWidth = 0.35f;
-	float blockHeight = 0.2f;
-	float borderMargin = 0.05f;
+	Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.25f, 0.50f, yellow);
+	Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.25f, 0.50f, blue);
+	Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.25f, 0.50f, red);
+	Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.25f, 0.50f, green);
 
-	float totalWidth = numBlocksPerRow * blockWidth + (numBlocksPerRow - 1) * borderMargin;
-	float totalHeight = numBlocksPerColumn * blockHeight + (numBlocksPerColumn - 1) * borderMargin;
-
-	float startPosX = -1.0f + (2.0f - totalWidth) / 2 + blockWidth / 2;
-	float startPosY = 1.0f - (2.0f - totalHeight) / 2 - blockHeight / 2 + 1.2f;
-
-	for (int i = 0; i < numBlocksPerColumn; i++)
-	{
-		for (int j = 0; j < numBlocksPerRow; j++)
-		{
-			float centerX = startPosX + j * (blockWidth + borderMargin);
-			float centerY = startPosY - i * (blockHeight + borderMargin);
-			center = vec3(centerX, centerY, 0.0f);
-			addShape(new Rectangle(center, blockHeight, blockWidth, colors[i]));
-		}
-	}
-
-	// Platform
-	center = vec3(0.0f, -1.85f, 0.0f);
-	addShape(new Rectangle(center, 0.20, 0.8, colors[3]));		// green border
-	addShape(new Rectangle(center, 0.15, 0.75, colors[0]));	// yellow platform
-
-	// Ball
-	vec3 loc = vec3(0.0f, -1.68f, 0.0f);
-	addShape(new Circle(loc, 0.05f, Color(0.81, 0.02, 0.24)));	// red ball
+	addShape(topRight);
+	addShape(bottomRight);
+	addShape(bottomLeft);
+	addShape(topLeft);
 }
 
 void App::gameLoop()
 {
+
+
 	while (!glfwWindowShouldClose(this->m_window))
 	{
 		render();
@@ -132,23 +114,64 @@ void App::gameLoop()
 
 void App::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	float currentFrame = glfwGetTime();
+	DELTA_TIME = currentFrame - LAST_FRAME;
+	LAST_FRAME = currentFrame;
+	// process camera input
+	// increate the camera speed using the deltaTime
+	float cameraSpeed = 3 * DELTA_TIME;
 
-	glm::mat4 projection = glm::mat4(1.0f);
+	// upward movement
+	if (glfwGetKey(this->m_window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+	// downward movement
+	if (glfwGetKey(this->m_window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+	// left movement
+	if (glfwGetKey(this->m_window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	// right movement
+	if (glfwGetKey(this->m_window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	// zoom out
+	if (glfwGetKey(this->m_window, GLFW_KEY_Q) == GLFW_PRESS)
+		cameraPos += cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+	// zoom in
+	if (glfwGetKey(this->m_window, GLFW_KEY_E) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	/*glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
 	m_renderer->getShader().setMat4("projection", projection);
+	m_renderer->getShader().use();*/
+
+
+	// get actual window size
+	int width, height;
+	glfwGetFramebufferSize(m_window, &width, &height);
+
+	// calculate aspect ratio
+	float aspectRatio = (float)width / (float)height;
+
+	// set up the view matrix
+	glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	m_renderer->getShader().use();
+	m_renderer->getShader().setMat4("view", view);
+
+	// set up the projection matrix
+	glm::mat4 projection = glm::perspective(glm::radians(135.0f), aspectRatio, 0.1f, 100.0f);
+	m_renderer->getShader().setMat4("projection", projection);
 
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
+	// glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 	for (Shape* shape : m_shapes)
 	{
-		if (START && typeid(*shape) == typeid(Circle))
-		{
-			shape->translate(VELOCITY);
-		}
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
 		shape->render();
 	}

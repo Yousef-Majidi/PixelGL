@@ -12,8 +12,9 @@ Shape::Shape(vec3 center, Color color) : m_center(center), m_color(color)
 {
 	m_transform = mat4{ 1.0f };
 	m_rotation = mat4{ 1.0f };
-	m_translation = mat4{ 1.0f };
+	m_translation = glm::translate(mat4{ 1.0f }, center);
 	m_scale = mat4{ 1.0f };
+	updateTransform();
 }
 
 Shape::~Shape()
