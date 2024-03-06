@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 
+#include "../Camera/Perspective/PerspectiveCamera.h"
 #include "../Color/Color.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Circle/Circle.h"
@@ -23,16 +24,16 @@ static float DELTA_TIME = 0.0f;
 static float LAST_FRAME = 0.0f;
 
 // camera
-static glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
-static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
-static glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+//static glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
+//static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
+//static glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 // mouse movement
-static bool firstMouse = true;
+static bool MOVE_CAMERA = false;
+static bool isFirstMouseMovement = true;
 static float yaw = -90.0f;
 static float pitch = 0.0f;
-static float lastX = 800.0f / 2.0;
-static float lastY = 600.0 / 2.0;
+
 static float FOV = 135.0f;
 /************DEBUG*************/
 
@@ -43,7 +44,8 @@ App::App(unsigned int width, unsigned int height, const char* vertextShaderPath,
 	createWindow(width, height);
 	m_renderer->initializeGLAD();
 	m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
-	initializesShapes();
+	initializeShapes();
+	initializeCamera();
 }
 
 App::~App()
@@ -82,12 +84,13 @@ void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
 	glfwMakeContextCurrent(this->m_window);
 	glfwSetWindowUserPointer(this->m_window, this);
 	glfwSetKeyCallback(this->m_window, keyCallback);
+	glfwSetMouseButtonCallback(this->m_window, mouseButtonCallback);
 	glfwSetCursorPosCallback(this->m_window, mouseCallback);
 	glfwSetScrollCallback(this->m_window, scrollCallback);
 	glfwSetFramebufferSizeCallback(this->m_window, framebuffer_size_callback);
 }
 
-void App::initializesShapes()
+void App::initializeShapes()
 {
 	/**************************************************/
 	/*****************ADD SHAPES HERE******************/
@@ -108,6 +111,11 @@ void App::initializesShapes()
 	addShape(topLeft);
 }
 
+void App::initializeCamera()
+{
+	m_camera = std::make_unique<PerspectiveCamera>(glm::mat4(1.0f), this->m_window, glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 45.0f);
+}
+
 void App::gameLoop()
 {
 
@@ -122,53 +130,54 @@ void App::gameLoop()
 
 void App::render()
 {
-	float currentFrame = glfwGetTime();
-	DELTA_TIME = currentFrame - LAST_FRAME;
-	LAST_FRAME = currentFrame;
-	// process camera input
-	// increate the camera speed using the deltaTime
-	float cameraSpeed = 3 * DELTA_TIME;
-
-	// upward movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	// downward movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	// left movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_A) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-	// right movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-	// zoom out
-	if (glfwGetKey(this->m_window, GLFW_KEY_Q) == GLFW_PRESS)
-		cameraPos += cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-	// zoom in
-	if (glfwGetKey(this->m_window, GLFW_KEY_E) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//float currentFrame = glfwGetTime();
+	//DELTA_TIME = currentFrame - LAST_FRAME;
+	//LAST_FRAME = currentFrame;
+	//// process camera input
+	//// increate the camera speed using the deltaTime
+	//float cameraSpeed = 3 * DELTA_TIME;
+
+	//// upward movement
+	//if (glfwGetKey(this->m_window, GLFW_KEY_W) == GLFW_PRESS)
+	//	cameraPos += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+	//// downward movement
+	//if (glfwGetKey(this->m_window, GLFW_KEY_S) == GLFW_PRESS)
+	//	cameraPos -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
+	//// left movement
+	//if (glfwGetKey(this->m_window, GLFW_KEY_A) == GLFW_PRESS)
+	//	cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	//// right movement
+	//if (glfwGetKey(this->m_window, GLFW_KEY_D) == GLFW_PRESS)
+	//	cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	//// zoom out
+	//if (glfwGetKey(this->m_window, GLFW_KEY_Q) == GLFW_PRESS)
+	//	cameraPos += cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+	//// zoom in
+	//if (glfwGetKey(this->m_window, GLFW_KEY_E) == GLFW_PRESS)
+	//	cameraPos -= cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
+
 	// get actual window size
-	int width, height;
-	glfwGetFramebufferSize(m_window, &width, &height);
+	//int width, height;
+	//glfwGetFramebufferSize(m_window, &width, &height);
+	//// calculate aspect ratio
+	//float aspectRatio = (float)width / (float)height;
+	//// set up the view matrix
+	//glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	//// set up the projection matrix
+	//glm::mat4 projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+	this->m_camera->update();
 
-	// calculate aspect ratio
-	float aspectRatio = (float)width / (float)height;
-
-	// set up the view matrix
-	glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	m_renderer->getShader().use();
-	m_renderer->getShader().setMat4("view", view);
-
-	// set up the projection matrix
-	glm::mat4 projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
-	m_renderer->getShader().setMat4("projection", projection);
+	//m_renderer->getShader().setMat4("view", view);
+	m_renderer->getShader().setMat4("view", this->m_camera->getView());
+	//m_renderer->getShader().setMat4("projection", projection);
+	m_renderer->getShader().setMat4("projection", this->m_camera->getProjection());
 
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
 	unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(this->m_camera->getView()));
 
 	for (Shape* shape : m_shapes)
 	{
@@ -186,6 +195,23 @@ void App::keyCallback(GLFWwindow* window, int key, int scancode, int action, int
 	}
 }
 
+void App::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
+	if (perspectiveCamera) // Check if the dynamic_cast was successful
+	{
+		if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS)
+		{
+			perspectiveCamera->setFreeLook(true);
+		}
+		else
+		{
+			perspectiveCamera->setFreeLook(false);
+		}
+	}
+}
+
 // glfw: viewport to window adjustment
 void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -194,43 +220,19 @@ void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void App::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (firstMouse)
+	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
+	if (perspectiveCamera && perspectiveCamera->getFreeLook()) // Check if the dynamic_cast was successful and if free look mode is enabled
 	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
+		perspectiveCamera->freeLook(xpos, ypos);
 	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-	lastX = xpos;
-	lastY = ypos;
-
-	float sensitivity = 0.1f; // a ratio that define how sensitive the mouse movement will be
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-
-	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	/*if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;*/
-
-	glm::vec3 front{};
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront = glm::normalize(front);
 }
 
 void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	cameraPos.z -= (float)yoffset;
+	/*cameraPos.z -= (float)yoffset;
 	if (cameraPos.z < 1.0f)
 		cameraPos.z = 1.0f;
 	if (cameraPos.z > 45.0f)
-		cameraPos.z = 45.0f;
+		cameraPos.z = 45.0f;*/
 }
