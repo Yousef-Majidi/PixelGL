@@ -19,6 +19,7 @@ public:
 	const bool getFreeLook() const;
 	void setFreeLook(bool freeLook);
 	void freeLook(float x, float y);
+	void zoom(float yoffset);
 	void transform(vec3 newPos);
 	void setSpeed(int speed);
 

@@ -28,11 +28,9 @@ void PerspectiveCamera::update()
 	float currentFrame = glfwGetTime();
 	DELTA_TIME = currentFrame - LAST_FRAME;
 	LAST_FRAME = currentFrame;
-
 	m_view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
 	m_projection = glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.1f, 100.0f);
 }
-
 
 const bool PerspectiveCamera::getFreeLook() const
 {
@@ -52,6 +50,15 @@ void PerspectiveCamera::freeLook(float x, float y)
 		processMouseInput(x, y);
 }
 
+void PerspectiveCamera::zoom(float yoffset)
+{
+	m_cameraPos += yoffset * m_cameraFront;
+	if (m_cameraPos.z < 5.0f)
+		m_cameraPos.z = 5.0f;
+	if (m_cameraPos.z > 25.0f)
+		m_cameraPos.z = 25.0f;
+}
+
 void PerspectiveCamera::transform(vec3 newPos)
 {
 	m_cameraPos += m_cameraSpeed * DELTA_TIME * newPos;
@@ -61,7 +68,6 @@ void PerspectiveCamera::setSpeed(int speed)
 {
 	m_cameraSpeed = speed;
 }
-
 
 void PerspectiveCamera::processMouseInput(float x, float y)
 {

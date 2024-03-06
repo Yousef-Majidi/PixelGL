@@ -177,7 +177,7 @@ void App::mouseButtonCallback(GLFWwindow* window, int button, int action, int mo
 {
 	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
-	if (perspectiveCamera) // Check if the dynamic_cast was successful
+	if (perspectiveCamera)
 	{
 		if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS)
 		{
@@ -200,7 +200,7 @@ void App::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
-	if (perspectiveCamera && perspectiveCamera->getFreeLook()) // Check if the dynamic_cast was successful and if free look mode is enabled
+	if (perspectiveCamera && perspectiveCamera->getFreeLook())
 	{
 		perspectiveCamera->freeLook(xpos, ypos);
 	}
@@ -208,9 +208,11 @@ void App::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	/*cameraPos.z -= (float)yoffset;
-	if (cameraPos.z < 1.0f)
-		cameraPos.z = 1.0f;
-	if (cameraPos.z > 45.0f)
-		cameraPos.z = 45.0f;*/
+	std::cout << "Scrolling" << std::endl;
+	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
+	if (perspectiveCamera)
+	{
+		perspectiveCamera->zoom((float)yoffset);
+	}
 }
