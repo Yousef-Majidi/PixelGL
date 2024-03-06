@@ -9,24 +9,28 @@
 static float DELTA_TIME = 0.0f;
 static float LAST_FRAME = 0.0f;
 // DEBUG
-PerspectiveCamera::PerspectiveCamera(mat4 projection, GLFWwindow* window, vec3 cameraPos, vec3 cameraFront, vec3 cameraUp, float fov) : Camera(projection, window)
+PerspectiveCamera::PerspectiveCamera(mat4 projection, vec3 cameraPos, vec3 cameraFront, vec3 cameraUp, float fov, float aspectRatio) : Camera(projection)
 {
-	this->m_cameraPos = cameraPos;
-	this->m_cameraFront = cameraFront;
-	this->m_cameraUp = cameraUp;
-	this->m_fov = fov;
-	this->m_freeLook = false;
-	this->m_firstMouseMovement = true;
-	this->m_yaw = -90.0f;
-	this->m_pitch = 0.0f;
+	m_cameraPos = cameraPos;
+	m_cameraFront = cameraFront;
+	m_cameraUp = cameraUp;
+	m_fov = fov;
+	m_freeLook = false;
+	m_firstMouseMovement = true;
+	m_yaw = -90.0f;
+	m_pitch = 0.0f;
+	m_aspectRatio = aspectRatio;
+	m_cameraSpeed = 1;
 }
 
 void PerspectiveCamera::update()
 {
-	processKeyboardInput();
-	// processMouseInput(0, 0);
-	this->m_view = glm::lookAt(this->m_cameraPos, this->m_cameraPos + this->m_cameraFront, this->m_cameraUp);
-	this->m_projection = glm::perspective(glm::radians(m_fov), getAspectRatio(), 0.1f, 100.0f);
+	float currentFrame = glfwGetTime();
+	DELTA_TIME = currentFrame - LAST_FRAME;
+	LAST_FRAME = currentFrame;
+
+	m_view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
+	m_projection = glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.1f, 100.0f);
 }
 
 
@@ -48,35 +52,16 @@ void PerspectiveCamera::freeLook(float x, float y)
 		processMouseInput(x, y);
 }
 
-float PerspectiveCamera::getAspectRatio()
+void PerspectiveCamera::transform(vec3 newPos)
 {
-	int width, heigth;
-	GLFWwindow* window = this->m_window;
-	glfwGetFramebufferSize(window, &width, &heigth);
-	return (float)width / (float)heigth;
+	m_cameraPos += m_cameraSpeed * DELTA_TIME * newPos;
 }
 
-void PerspectiveCamera::processKeyboardInput()
+void PerspectiveCamera::setSpeed(int speed)
 {
-	float currentFrame = glfwGetTime();
-	DELTA_TIME = currentFrame - LAST_FRAME;
-	LAST_FRAME = currentFrame;
-
-	float cameraSpeed = 3 * DELTA_TIME;
-
-	// upward movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_UP) == GLFW_PRESS)
-		m_cameraPos += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	// downward movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		m_cameraPos -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	// left movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		m_cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-	// right movement
-	if (glfwGetKey(this->m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		m_cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
+	m_cameraSpeed = speed;
 }
+
 
 void PerspectiveCamera::processMouseInput(float x, float y)
 {

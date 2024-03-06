@@ -32,6 +32,7 @@ private:
 	void initializeCamera();
 	void gameLoop();
 	void render();
+	void processKeyboardInput();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);

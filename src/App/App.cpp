@@ -19,22 +19,8 @@ using std::string;
 using glm::vec3;
 
 /************DEBUG*************/
-// delta time
-static float DELTA_TIME = 0.0f;
-static float LAST_FRAME = 0.0f;
 
-// camera
-//static glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
-//static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -2.0f);
-//static glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-// mouse movement
-static bool MOVE_CAMERA = false;
-static bool isFirstMouseMovement = true;
-static float yaw = -90.0f;
-static float pitch = 0.0f;
-
-static float FOV = 135.0f;
 /************DEBUG*************/
 
 App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -113,7 +99,11 @@ void App::initializeShapes()
 
 void App::initializeCamera()
 {
-	m_camera = std::make_unique<PerspectiveCamera>(glm::mat4(1.0f), this->m_window, glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 45.0f);
+	int width, heigth;
+	glfwGetFramebufferSize(m_window, &width, &heigth);
+	float aspectRatio = (float)width / (float)heigth;
+	m_camera = std::make_unique<PerspectiveCamera>(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 45.0f, aspectRatio);
+	dynamic_cast<PerspectiveCamera*>(m_camera.get())->setSpeed(5);
 }
 
 void App::gameLoop()
@@ -132,47 +122,11 @@ void App::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//float currentFrame = glfwGetTime();
-	//DELTA_TIME = currentFrame - LAST_FRAME;
-	//LAST_FRAME = currentFrame;
-	//// process camera input
-	//// increate the camera speed using the deltaTime
-	//float cameraSpeed = 3 * DELTA_TIME;
-
-	//// upward movement
-	//if (glfwGetKey(this->m_window, GLFW_KEY_W) == GLFW_PRESS)
-	//	cameraPos += cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	//// downward movement
-	//if (glfwGetKey(this->m_window, GLFW_KEY_S) == GLFW_PRESS)
-	//	cameraPos -= cameraSpeed * glm::vec3(0.0f, 1.0f, 0.0f);
-	//// left movement
-	//if (glfwGetKey(this->m_window, GLFW_KEY_A) == GLFW_PRESS)
-	//	cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-	//// right movement
-	//if (glfwGetKey(this->m_window, GLFW_KEY_D) == GLFW_PRESS)
-	//	cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 0.0f);
-	//// zoom out
-	//if (glfwGetKey(this->m_window, GLFW_KEY_Q) == GLFW_PRESS)
-	//	cameraPos += cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-	//// zoom in
-	//if (glfwGetKey(this->m_window, GLFW_KEY_E) == GLFW_PRESS)
-	//	cameraPos -= cameraSpeed * glm::vec3(0.0f, 0.0f, 1.0f);
-
-	// get actual window size
-	//int width, height;
-	//glfwGetFramebufferSize(m_window, &width, &height);
-	//// calculate aspect ratio
-	//float aspectRatio = (float)width / (float)height;
-	//// set up the view matrix
-	//glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	//// set up the projection matrix
-	//glm::mat4 projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+	processKeyboardInput();
 	this->m_camera->update();
 
 	m_renderer->getShader().use();
-	//m_renderer->getShader().setMat4("view", view);
 	m_renderer->getShader().setMat4("view", this->m_camera->getView());
-	//m_renderer->getShader().setMat4("projection", projection);
 	m_renderer->getShader().setMat4("projection", this->m_camera->getProjection());
 
 	unsigned int modelLoc = glGetUniformLocation(m_renderer->getShader().ID, "model");
@@ -183,6 +137,30 @@ void App::render()
 	{
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
 		shape->render();
+	}
+}
+
+void App::processKeyboardInput()
+{
+	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(m_camera.get());
+	if (perspectiveCamera)
+	{
+		if (glfwGetKey(this->m_window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			perspectiveCamera->transform(glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (glfwGetKey(this->m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			perspectiveCamera->transform(glm::vec3(0.0f, -1.0f, 0.0f));
+		}
+		if (glfwGetKey(this->m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			perspectiveCamera->transform(glm::vec3(-1.0f, 0.0f, 0.0f));
+		}
+		if (glfwGetKey(this->m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			perspectiveCamera->transform(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
 	}
 }
 
