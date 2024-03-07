@@ -86,18 +86,21 @@ void App::initializeShapes()
 	Color red(0.66, 0.08, 0.08);
 	Color green(0.36, 0.6, 0.11);
 
-	Rectangle* center = new Rectangle(vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, yellow);
-	addShape(center);
+	const char* texturePath = "assets/box.png";
 
-	/*Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.25f, 0.50f, yellow);
-	Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.25f, 0.50f, blue);
-	Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.25f, 0.50f, red);
-	Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.25f, 0.50f, green);
+	//Rectangle* center = new Rectangle(vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, yellow, texturePath);
+	////Rectangle* center = new Rectangle(vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, yellow);
+	//addShape(center);
+
+	Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.50f, 1.0f, yellow, texturePath);
+	Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.5f, 1.0f, blue, texturePath);
+	Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.5f, 1.0f, red, texturePath);
+	Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.5f, 1.0f, green, texturePath);
 
 	addShape(topRight);
 	addShape(bottomRight);
 	addShape(bottomLeft);
-	addShape(topLeft);*/
+	addShape(topLeft);
 }
 
 void App::initializeCamera()
@@ -211,7 +214,6 @@ void App::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	std::cout << "Scrolling" << std::endl;
 	App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 	PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
 	if (perspectiveCamera)
