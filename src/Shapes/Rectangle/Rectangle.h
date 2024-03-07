@@ -24,7 +24,7 @@ private:
 
 	void generateVertices(vec3 center, float size, vec3 color) override;
 	void generateVertices(vec3 center, float height, float width, vec3 color);
-	void generateBuffers() override;
+	void generateBuffers(int bufferSize) override;
 	void generateIndices();
 	const unsigned int getIndicesSize() const;
 };

@@ -86,7 +86,10 @@ void App::initializeShapes()
 	Color red(0.66, 0.08, 0.08);
 	Color green(0.36, 0.6, 0.11);
 
-	Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.25f, 0.50f, yellow);
+	Rectangle* center = new Rectangle(vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, yellow);
+	addShape(center);
+
+	/*Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.25f, 0.50f, yellow);
 	Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.25f, 0.50f, blue);
 	Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.25f, 0.50f, red);
 	Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.25f, 0.50f, green);
@@ -94,7 +97,7 @@ void App::initializeShapes()
 	addShape(topRight);
 	addShape(bottomRight);
 	addShape(bottomLeft);
-	addShape(topLeft);
+	addShape(topLeft);*/
 }
 
 void App::initializeCamera()

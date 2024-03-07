@@ -43,10 +43,11 @@ protected:
 	mat4 m_scale;
 	GLuint m_numVertices{};
 	GLuint VAO{}, VBO{}, EBO{};
+	GLuint m_texture{};
 	vector<float> m_vertices{};
 
 	virtual void updateTransform();
 	virtual void generateVertices(vec3 center, float size, vec3 color) = 0;
-	virtual void generateBuffers() = 0;
+	virtual void generateBuffers(int bufferSize) = 0;
 };
 #endif // !SHAPE_H

@@ -156,6 +156,7 @@
     <ClInclude Include="src\Color\Color.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\shaderinit.h" />
+    <ClInclude Include="src\Shader\stb_image.h" />
     <ClInclude Include="src\Shapes\Circle\Circle.h" />
     <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Shapes\Shape.h" />

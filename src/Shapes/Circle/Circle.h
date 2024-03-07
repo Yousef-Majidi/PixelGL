@@ -20,6 +20,6 @@ public:
 	void render() const override;
 private:
 	void generateVertices(vec3 center, float size, vec3 color) override;
-	void generateBuffers() override;
+	void generateBuffers(int bufferSize) override;
 };
 #endif // !CIRCLE_H

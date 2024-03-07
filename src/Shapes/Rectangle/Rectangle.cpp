@@ -12,14 +12,14 @@ Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, color
 {
 	generateVertices(center, size, color.getRGB());
 	generateIndices();
-	generateBuffers();
+	generateBuffers(6);
 }
 
 Rectangle::Rectangle(vec3 center, float height, float width, Color color) : Shape(center, color)
 {
 	generateVertices(center, height, width, color.getRGB());
 	generateIndices();
-	generateBuffers();
+	generateBuffers(6);
 }
 
 void Rectangle::render() const
@@ -34,10 +34,10 @@ void Rectangle::generateVertices(vec3 center, float size, vec3 color)
 	float halfSize = size / 2.0f;
 	m_vertices =
 	{
-		center.x - halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top left
 		center.x + halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top right
+		center.x + halfSize, center.y - halfSize, center.z, color.r, color.g, color.b, // bottom right
 		center.x - halfSize, center.y - halfSize, center.z, color.r, color.g, color.b, // bottom left
-		center.x + halfSize, center.y - halfSize, center.z, color.r, color.g, color.b // bottom right
+		center.x - halfSize, center.y + halfSize, center.z, color.r, color.g, color.b, // top left
 	};
 }
 
@@ -48,13 +48,13 @@ void Rectangle::generateVertices(vec3 center, float height, float width, vec3 co
 	m_vertices =
 	{
 		center.x + halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top right
-		center.x - halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top left
+		center.x + halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b, // bottom right
 		center.x - halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b, // bottom left
-		center.x + halfWidth, center.y - halfHeight, center.z, color.r, color.g, color.b // bottom right
+		center.x - halfWidth, center.y + halfHeight, center.z, color.r, color.g, color.b, // top left
 	};
 }
 
-void Rectangle::generateBuffers()
+void Rectangle::generateBuffers(int bufferSize)
 {
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->VBO);
@@ -68,10 +68,10 @@ void Rectangle::generateBuffers()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndicesSize(), m_indices.data(), GL_STATIC_DRAW);
 
 	// position attribute pointer
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// color attribute pointer
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
