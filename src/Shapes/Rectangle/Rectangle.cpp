@@ -1,12 +1,13 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include <glad/glad.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/vector_float3.hpp>
+#include <initializer_list>
 #include <iostream>
 #include "../../Color/Color.h"
+#include "../../Shader/stb_image.h"
 #include "../Shape.h"
 #include "Rectangle.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "../../Shader/stb_image.h"
 
 using glm::mat4;
 using glm::vec3;
@@ -18,14 +19,16 @@ Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, color
 	generateBuffers(6);
 }
 
-Rectangle::Rectangle(vec3 center, float height, float width, Color color, const char* texturePath) : Shape(center, color)
+Rectangle::Rectangle(vec3 center, float height, float width, Color color, std::initializer_list<const char*> textures) : Shape(center, color)
 {
-	if (texturePath)
+	if (textures.size() > 0)
 	{
+		std::cout << "texture list size: " << textures.size() << std::endl;
 		generateVertices(center, height, width, color.getRGB(), true);
 		generateIndices();
 		generateBuffers(8);
-		applyTexture(texturePath);
+		for (const char* texture : textures)
+			applyTexture(texture);
 		return;
 	}
 	generateVertices(center, height, width, color.getRGB());
@@ -100,10 +103,10 @@ void Rectangle::generateBuffers(int bufferSize)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	/*glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void Rectangle::generateIndices()
@@ -115,7 +118,7 @@ void Rectangle::generateIndices()
 	this->m_numVertices = getIndicesSize() / sizeof(unsigned int);
 }
 
-void Rectangle::applyTexture(const char* texturePath)
+void Rectangle::applyTexture(const char* texture)
 {
 	// delete the previous texture
 	glDeleteTextures(1, &m_texture);
@@ -125,11 +128,12 @@ void Rectangle::applyTexture(const char* texturePath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set GL_REPEAT as the wrapping method)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	// texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load image (mybox.png) and create the texture 
+
+	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(texture, &width, &height, &nrChannels, 0);
 	// Generate mipmaps
 	if (data)
 	{
@@ -138,7 +142,7 @@ void Rectangle::applyTexture(const char* texturePath)
 	}
 	else
 	{
-		std::cout << "Failed to load texture: " << texturePath << std::endl;
+		std::cout << "Failed to load texture: " << texture << std::endl;
 	}
 	stbi_image_free(data);
 }

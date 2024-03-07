@@ -3,6 +3,7 @@
 
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/vector_float3.hpp>
+#include <initializer_list>
 #include <vector>
 #include "../../Color/Color.h"
 #include "../Shape.h"
@@ -17,7 +18,8 @@ class Rectangle : public Shape
 public:
 	Rectangle() = delete;
 	Rectangle(vec3 center, float size, Color color);
-	Rectangle(vec3 center, float height, float width, Color color, const char* texturePath = nullptr);
+
+	Rectangle(vec3 center, float height, float width, Color color, std::initializer_list<const char*> textures = {});
 
 	void render() const override;
 private:
@@ -27,7 +29,7 @@ private:
 	void generateVertices(vec3 center, float height, float width, vec3 color, bool withTexture = false);
 	void generateBuffers(int bufferSize) override;
 	void generateIndices();
-	void applyTexture(const char* texturePath);
+	void applyTexture(const char* texture);
 	const unsigned int getIndicesSize() const;
 };
 #endif // !RECTANGLE_H
