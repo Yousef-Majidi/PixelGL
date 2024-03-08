@@ -1,6 +1,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../../DeltaTime/DeltaTime.h"
 #include "../Camera.h"
 #include "PerspectiveCamera.h"
 
@@ -8,12 +9,10 @@ namespace PixelGL
 {
 	namespace Camera
 	{
-		using glm::mat4, glm::vec3;
+		using
+			glm::mat4,
+			glm::vec3;
 
-		// DEBUG 
-		static float DELTA_TIME = 0.0f;
-		static float LAST_FRAME = 0.0f;
-		// DEBUG
 		PerspectiveCamera::PerspectiveCamera(mat4 projection, vec3 cameraPos, vec3 cameraFront, vec3 cameraUp, float fov, float aspectRatio) : Camera(projection)
 		{
 			m_cameraPos = cameraPos;
@@ -30,9 +29,6 @@ namespace PixelGL
 
 		void PerspectiveCamera::update()
 		{
-			float currentFrame = glfwGetTime();
-			DELTA_TIME = currentFrame - LAST_FRAME;
-			LAST_FRAME = currentFrame;
 			m_view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
 			m_projection = glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.1f, 100.0f);
 		}
@@ -66,7 +62,7 @@ namespace PixelGL
 
 		void PerspectiveCamera::transform(vec3 newPos)
 		{
-			m_cameraPos += m_cameraSpeed * DELTA_TIME * newPos;
+			m_cameraPos += m_cameraSpeed * DeltaTime::getInstance().getDeltaTime() * newPos;
 		}
 
 		void PerspectiveCamera::setSpeed(int speed)

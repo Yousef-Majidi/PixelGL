@@ -8,6 +8,7 @@
 #include <memory>
 #include "../Camera/Perspective/PerspectiveCamera.h"
 #include "../Color/Color.h"
+#include "../DeltaTime/DeltaTime.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Circle/Circle.h"
 #include "../Shapes/Rectangle/Rectangle.h"
@@ -26,10 +27,11 @@ namespace PixelGL
 		using
 			glm::vec3,
 			glm::mat4,
+			std::initializer_list,
 			PixelGL::Camera::PerspectiveCamera,
-			PixelGL::Shape::Shape,
-			PixelGL::Shape::Rectangle,
 			PixelGL::Renderer::Renderer,
+			PixelGL::Shape::Rectangle,
+			PixelGL::Shape::Shape,
 			PixelGL::Color::Color;
 
 		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
@@ -95,7 +97,7 @@ namespace PixelGL
 			Color red(0.66, 0.08, 0.08);
 			Color green(0.36, 0.6, 0.11);
 
-			std::initializer_list<const char*> texturePaths = { "assets/box.png", "assets/smilie.png" };
+			initializer_list<const char*> texturePaths = { "assets/box.png", "assets/smilie.png" };
 
 			Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.50f, 1.0f, yellow, texturePaths);
 			Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.5f, 1.0f, blue, texturePaths);
@@ -139,6 +141,7 @@ namespace PixelGL
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			DeltaTime::getInstance().update();
 			processKeyboardInput();
 			m_camera->update();
 			m_renderer->getShader().use();
@@ -165,6 +168,7 @@ namespace PixelGL
 			}
 			NEXT_TEXTURE = false;
 			RESET_TEXTURE = false;
+			std::cout << "delta time: " << DeltaTime::getInstance().getDeltaTime() << std::endl;
 		}
 
 		void App::processKeyboardInput()

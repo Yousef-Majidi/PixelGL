@@ -3,6 +3,7 @@
 #include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "../Color/Color.h"
+#include "../DeltaTime/DeltaTime.h"
 #include "Shape.h"
 
 namespace PixelGL
