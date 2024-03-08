@@ -27,6 +27,7 @@ namespace PixelGL
 		using
 			glm::vec3,
 			glm::mat4,
+			std::unique_ptr,
 			std::initializer_list,
 			PixelGL::Camera::PerspectiveCamera,
 			PixelGL::Renderer::Renderer,
@@ -34,24 +35,20 @@ namespace PixelGL
 			PixelGL::Shape::Shape,
 			PixelGL::Color::Color;
 
-		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath) : m_vertexShaderPath(vertextShaderPath), m_fragmentShaderPath(fragmentShaderPath)
+		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath)
 		{
 			m_renderer = std::make_unique<Renderer>();
 			m_renderer->initializeGLFW();
 			createWindow(width, height);
+			setCallbacks();
 			m_renderer->initializeGLAD();
-			m_renderer->initializeShader(m_vertexShaderPath, m_fragmentShaderPath);
+			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath);
 			initializeShapes();
 			initializeCamera();
 		}
 
 		App::~App()
 		{
-			for (Shape* shape : m_shapes)
-			{
-				delete shape;
-			}
-
 			if (m_window)
 			{
 				glfwDestroyWindow(m_window);
@@ -62,11 +59,6 @@ namespace PixelGL
 		void App::run()
 		{
 			gameLoop();
-		}
-
-		void App::addShape(Shape* shape)
-		{
-			m_shapes.push_back(shape);
 		}
 
 		void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
@@ -80,11 +72,16 @@ namespace PixelGL
 			}
 			glfwMakeContextCurrent(m_window);
 			glfwSetWindowUserPointer(m_window, this);
+
+		}
+
+		void App::setCallbacks()
+		{
 			glfwSetKeyCallback(m_window, keyCallback);
 			glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
 			glfwSetCursorPosCallback(m_window, CursorPosCallback);
 			glfwSetScrollCallback(m_window, scrollCallback);
-			glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
 		}
 
 		void App::initializeShapes()
@@ -127,6 +124,11 @@ namespace PixelGL
 			dynamic_cast<PerspectiveCamera*>(m_camera.get())->setSpeed(5);
 		}
 
+		void App::addShape(Shape* shape)
+		{
+			m_uniqueShapes.push_back(unique_ptr<Shape>(shape));
+		}
+
 		void App::gameLoop()
 		{
 			while (!glfwWindowShouldClose(m_window))
@@ -152,7 +154,7 @@ namespace PixelGL
 			unsigned int viewLoc = glGetUniformLocation(m_renderer->getShader().ID, "view");
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(m_camera->getView()));
 
-			for (Shape* shape : m_shapes)
+			for (unique_ptr<Shape>& shape : m_uniqueShapes)
 			{
 				if (NEXT_TEXTURE)
 				{
@@ -166,6 +168,7 @@ namespace PixelGL
 				glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "hasTexture"), shape->hasTextures());
 				shape->render();
 			}
+
 			NEXT_TEXTURE = false;
 			RESET_TEXTURE = false;
 			std::cout << "delta time: " << DeltaTime::getInstance().getDeltaTime() << std::endl;
@@ -252,7 +255,7 @@ namespace PixelGL
 		}
 
 		// glfw: viewport to window adjustment
-		void App::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+		void App::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 		{
 			glViewport(0, 0, width, height);
 		}

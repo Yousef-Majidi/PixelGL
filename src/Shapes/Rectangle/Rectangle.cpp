@@ -15,8 +15,8 @@ namespace PixelGL
 	{
 		using
 			glm::vec3,
-			PixelGL::Color::Color,
-			std::initializer_list;
+			std::initializer_list,
+			PixelGL::Color::Color;
 
 		Rectangle::Rectangle(vec3 center, float size, Color color) : Shape(center, color)
 		{
