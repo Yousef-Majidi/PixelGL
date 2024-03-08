@@ -18,7 +18,7 @@ Circle::Circle(vec3 center, float size, Color color) : Shape(center, color)
 
 void Circle::render() const
 {
-	glBindVertexArray(this->VAO);
+	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, m_numVertices);
 	glBindVertexArray(0);
 }
@@ -45,11 +45,11 @@ void Circle::generateVertices(vec3 center, float size, vec3 color)
 
 void Circle::generateBuffers(int bufferSize)
 {
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->VBO);
-	glBindVertexArray(this->VAO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, getVerticesSize(), m_vertices.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)0);

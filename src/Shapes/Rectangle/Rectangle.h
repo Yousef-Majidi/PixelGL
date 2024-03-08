@@ -26,10 +26,10 @@ private:
 	vector<unsigned int> m_indices;
 
 	void generateVertices(vec3 center, float size, vec3 color) override;
-	void generateVertices(vec3 center, float height, float width, vec3 color, bool withTexture = false);
+	void generateVertices(vec3 center, float height, float width, vec3 color);
 	void generateBuffers(int bufferSize) override;
 	void generateIndices();
-	void applyTexture(const char* texture);
+	void applyTexture(const char* texture, int textureIdx);
 	const unsigned int getIndicesSize() const;
 };
 #endif // !RECTANGLE_H

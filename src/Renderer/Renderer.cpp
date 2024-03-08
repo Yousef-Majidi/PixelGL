@@ -37,7 +37,7 @@ void Renderer::initializeGLAD()
 
 void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
-	this->m_shader = Shader(vertexShaderPath, fragmentShaderPath);
+	m_shader = Shader(vertexShaderPath, fragmentShaderPath);
 }
 
 void Renderer::render(const GLuint VAO, const GLuint EBO, const GLuint numVertices)

@@ -35,10 +35,10 @@ private:
 	void processKeyboardInput();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	static void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 
 #endif // !App_H

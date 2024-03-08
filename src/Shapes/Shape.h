@@ -27,7 +27,10 @@ public:
 	virtual void scale(float scaleFactor);
 	virtual void translateTo(vec3 newPos);
 	virtual void translate(vec3 velocity);
+	const void applyNextTexture();
+	const void applyTexture(int textureIdx);
 	const float getVerticesSize() const;
+	const bool hasTextures() const;
 	const mat4 getTransform() const;
 	const GLuint getNumVertices() const;
 	const GLuint getVAO() const;
@@ -43,11 +46,13 @@ protected:
 	mat4 m_scale;
 	GLuint m_numVertices{};
 	GLuint VAO{}, VBO{}, EBO{};
-	GLuint m_texture{};
+	GLuint m_selectedTexture{};
 	vector<float> m_vertices{};
+	vector<GLuint> m_textures{};
 
 	virtual void updateTransform();
 	virtual void generateVertices(vec3 center, float size, vec3 color) = 0;
 	virtual void generateBuffers(int bufferSize) = 0;
+	virtual void applyTexture(const char* texture, int textureIdx) = 0;
 };
 #endif // !SHAPE_H

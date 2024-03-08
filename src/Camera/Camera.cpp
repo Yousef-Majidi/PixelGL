@@ -9,12 +9,12 @@ Camera::Camera(mat4 projection)
 
 mat4 Camera::getProjection()
 {
-	return this->m_projection;
+	return m_projection;
 }
 
 mat4 Camera::getView()
 {
-	return this->m_view;
+	return m_view;
 }
 
 

@@ -34,12 +34,12 @@ void PerspectiveCamera::update()
 
 const bool PerspectiveCamera::getFreeLook() const
 {
-	return this->m_freeLook;
+	return m_freeLook;
 }
 
 void PerspectiveCamera::setFreeLook(bool freeLook)
 {
-	this->m_freeLook = freeLook;
+	m_freeLook = freeLook;
 	if (!m_freeLook)
 		m_firstMouseMovement = true;
 }
