@@ -5,23 +5,26 @@
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
-
-using glm::mat4;
-
-class Camera
+namespace PixelGL
 {
-public:
-	Camera() = delete;
-	Camera(mat4 projection);
-	~Camera() {};
+	namespace Camera
+	{
+		class Camera
+		{
+		public:
+			Camera() = delete;
+			Camera(glm::mat4 projection);
+			~Camera() {};
 
-	virtual void update() = 0;
+			virtual void update() = 0;
 
-	mat4 getProjection();
-	mat4 getView();
+			glm::mat4 getProjection();
+			glm::mat4 getView();
 
-protected:
-	mat4 m_projection;
-	mat4 m_view;
-};
+		protected:
+			glm::mat4 m_projection;
+			glm::mat4 m_view;
+		};
+	}
+}
 #endif // !CAMERA_H

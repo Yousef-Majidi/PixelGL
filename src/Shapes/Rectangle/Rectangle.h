@@ -8,28 +8,29 @@
 #include "../../Color/Color.h"
 #include "../Shape.h"
 
-
-using std::vector;
-using glm::mat4;
-using glm::vec3;
-
-class Rectangle : public Shape
+namespace PixelGL
 {
-public:
-	Rectangle() = delete;
-	Rectangle(vec3 center, float size, Color color);
+	namespace Shape
+	{
+		class Rectangle : public Shape
+		{
+		public:
+			Rectangle() = delete;
+			Rectangle(glm::vec3 center, float size, PixelGL::Color::Color color);
 
-	Rectangle(vec3 center, float height, float width, Color color, std::initializer_list<const char*> textures = {});
+			Rectangle(glm::vec3 center, float height, float width, PixelGL::Color::Color color, std::initializer_list<const char*> textures = {});
 
-	void render() const override;
-private:
-	vector<unsigned int> m_indices;
+			void render() const override;
+		private:
+			std::vector<unsigned int> m_indices;
 
-	void generateVertices(vec3 center, float size, vec3 color) override;
-	void generateVertices(vec3 center, float height, float width, vec3 color);
-	void generateBuffers(int bufferSize) override;
-	void generateIndices();
-	void applyTexture(const char* texture, int textureIdx);
-	const unsigned int getIndicesSize() const;
-};
+			void generateVertices(glm::vec3 center, float size, glm::vec3 color) override;
+			void generateVertices(glm::vec3 center, float height, float width, glm::vec3 color);
+			void generateBuffers(int bufferSize) override;
+			void generateIndices();
+			void applyTexture(const char* texture, int textureIdx);
+			const unsigned int getIndicesSize() const;
+		};
+	}
+}
 #endif // !RECTANGLE_H
