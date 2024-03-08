@@ -83,5 +83,8 @@
     <ClInclude Include="src\Camera\Perspective\PerspectiveCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Shader\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
