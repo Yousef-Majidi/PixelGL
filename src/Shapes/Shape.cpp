@@ -12,14 +12,20 @@ Shape::Shape(vec3 center, Color color) : m_center(center), m_color(color)
 {
 	m_transform = mat4{ 1.0f };
 	m_rotation = mat4{ 1.0f };
-	m_translation = mat4{ 1.0f };
+	m_translation = glm::translate(mat4{ 1.0f }, center);
 	m_scale = mat4{ 1.0f };
+	updateTransform();
 }
 
 Shape::~Shape()
 {
-	glDeleteVertexArrays(1, &this->VAO);
-	glDeleteBuffers(1, &this->VBO);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	for (GLuint texture : m_textures)
+	{
+		glDeleteTextures(1, &texture);
+	}
 }
 
 void Shape::resetRotation()
@@ -72,34 +78,55 @@ void Shape::translate(vec3 velocity)
 	updateTransform();
 }
 
+const void Shape::applyNextTexture()
+{
+	if (!m_textures.empty())
+	{
+		(m_selectedTexture < m_textures.size() - 1) ? m_selectedTexture++ : m_selectedTexture = 0;
+	}
+}
+
+const void Shape::applyTexture(int textureIdx)
+{
+	if (textureIdx < m_textures.size())
+	{
+		m_selectedTexture = textureIdx;
+	}
+}
+
 const float Shape::getVerticesSize() const
 {
-	return this->m_vertices.size() * sizeof(float);
+	return m_vertices.size() * sizeof(float);
+}
+
+const bool Shape::hasTextures() const
+{
+	return m_textures.size() > 0;
 }
 
 const mat4 Shape::getTransform() const
 {
-	return this->m_transform;
+	return m_transform;
 }
 
 const GLuint Shape::getNumVertices() const
 {
-	return this->m_numVertices;
+	return m_numVertices;
 }
 
 const GLuint Shape::getVAO() const
 {
-	return this->VAO;
+	return VAO;
 }
 
 const GLuint Shape::getEBO() const
 {
-	return this->EBO;
+	return EBO;
 }
 
 const GLuint Shape::getVBO() const
 {
-	return this->VBO;
+	return VBO;
 }
 
 void Shape::updateTransform()

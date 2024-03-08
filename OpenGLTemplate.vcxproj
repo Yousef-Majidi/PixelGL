@@ -22,8 +22,9 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{1c204afc-d2ca-4462-84df-796bae81504d}</ProjectGuid>
-    <RootNamespace>OpenGLTemplate</RootNamespace>
+    <RootNamespace>PixelGL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PixelGL</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -133,6 +134,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App\App.cpp" />
+    <ClCompile Include="src\Camera\Camera.cpp" />
+    <ClCompile Include="src\Camera\Perspective\PerspectiveCamera.cpp" />
     <ClCompile Include="src\Color\Color.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
@@ -148,9 +151,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
+    <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Camera\Perspective\PerspectiveCamera.h" />
     <ClInclude Include="src\Color\Color.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\shaderinit.h" />
+    <ClInclude Include="src\Shader\stb_image.h" />
     <ClInclude Include="src\Shapes\Circle\Circle.h" />
     <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Shapes\Shape.h" />

@@ -31,7 +31,7 @@ vec3 Color::randomColor()
 
 vec3 Color::getRGB() const
 {
-	return this->m_colors;
+	return m_colors;
 }
 
 
