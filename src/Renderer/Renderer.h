@@ -4,19 +4,24 @@
 #include <glad/glad.h>
 #include "../Shader/shaderinit.h"
 
-class Renderer
+namespace PixelGL
 {
-public:
-	Renderer();
-	~Renderer();
+	namespace Renderer
+	{
+		class Renderer
+		{
+		public:
+			Renderer();
+			~Renderer();
 
-	Shader getShader() const;
-	void initializeGLFW();
-	void initializeGLAD();
-	void initializeShader(const char*, const char*);
-	void render(const GLuint VAO, const GLuint EBO, const GLuint numVertices);
+			PixelGL::Shader::Shader getShader() const;
+			void initializeGLFW();
+			void initializeGLAD();
+			void initializeShader(const char*, const char*);
 
-private:
-	Shader m_shader{};
-};
+		private:
+			PixelGL::Shader::Shader m_shader{};
+		};
+	}
+}
 #endif // !RENDERER_H

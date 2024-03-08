@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1c204afc-d2ca-4462-84df-796bae81504d}</ProjectGuid>
+    <ProjectGuid>{1DA0A3A2-37EC-4DA0-8F9A-41F3F54FAAEE}</ProjectGuid>
     <RootNamespace>PixelGL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>PixelGL</ProjectName>
@@ -109,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +138,7 @@
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Camera\Perspective\PerspectiveCamera.cpp" />
     <ClCompile Include="src\Color\Color.cpp" />
+    <ClCompile Include="src\DeltaTime\DeltaTime.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
@@ -154,6 +156,7 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Camera\Perspective\PerspectiveCamera.h" />
     <ClInclude Include="src\Color\Color.h" />
+    <ClInclude Include="src\DeltaTime\DeltaTime.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Shader\shaderinit.h" />
     <ClInclude Include="src\Shader\stb_image.h" />
