@@ -79,7 +79,7 @@ namespace PixelGL
 		{
 			glfwSetKeyCallback(m_window, keyCallback);
 			glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
-			glfwSetCursorPosCallback(m_window, CursorPosCallback);
+			glfwSetCursorPosCallback(m_window, cursorPosCallback);
 			glfwSetScrollCallback(m_window, scrollCallback);
 			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
 		}
@@ -171,7 +171,6 @@ namespace PixelGL
 
 			NEXT_TEXTURE = false;
 			RESET_TEXTURE = false;
-			std::cout << "delta time: " << DeltaTime::getInstance().getDeltaTime() << std::endl;
 		}
 
 		void App::processKeyboardInput()
@@ -208,12 +207,12 @@ namespace PixelGL
 			if ((key == GLFW_KEY_T) && action == GLFW_PRESS)
 			{
 				NEXT_TEXTURE = true;
-				std::cout << "Applying next texture" << std::endl;
+				std::cout << "T key pressed" << std::endl;
 			}
 			if ((key == GLFW_KEY_Y) && action == GLFW_PRESS)
 			{
 				RESET_TEXTURE = true;
-				std::cout << "Resetting texture" << std::endl;
+				std::cout << "Y key pressed" << std::endl;
 			}
 		}
 
@@ -234,7 +233,7 @@ namespace PixelGL
 			}
 		}
 
-		void App::CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+		void App::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 		{
 			App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 			PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());

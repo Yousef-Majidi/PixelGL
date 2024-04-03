@@ -27,17 +27,17 @@ namespace PixelGL
 
 		Rectangle::Rectangle(vec3 center, float height, float width, Color color, initializer_list<const char*> textures) : Shape(center, color)
 		{
-			int bufferSize = 6;
+			int bytesToRead = 6;
 			bool withTexture = textures.size() > 0;
 			if (withTexture)
 			{
 				m_textures.resize(textures.size());
 				m_selectedTexture = 0;
-				bufferSize = 8;
+				bytesToRead = 8;
 			}
 			generateVertices(center, height, width, color.getRGB());
 			generateIndices();
-			generateBuffers(bufferSize);
+			generateBuffers(bytesToRead);
 			if (withTexture)
 			{
 				int i = 0;
@@ -97,7 +97,7 @@ namespace PixelGL
 			};
 		}
 
-		void Rectangle::generateBuffers(int bufferSize)
+		void Rectangle::generateBuffers(unsigned int bytesToRead)
 		{
 			glGenVertexArrays(1, &VAO);
 			glGenBuffers(1, &VBO);
@@ -111,15 +111,15 @@ namespace PixelGL
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndicesSize(), m_indices.data(), GL_STATIC_DRAW);
 
 			// position attribute pointer
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bytesToRead * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
 			// color attribute pointer
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, bytesToRead * sizeof(float), (void*)(3 * sizeof(float)));
 			glEnableVertexAttribArray(1);
 			if (hasTextures())
 			{
 				// texture attribute pointer
-				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)(6 * sizeof(float)));
+				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, bytesToRead * sizeof(float), (void*)(6 * sizeof(float)));
 				glEnableVertexAttribArray(2);
 			}
 

@@ -50,7 +50,7 @@ namespace PixelGL
 			m_numVertices = numVertices;
 		}
 
-		void Circle::generateBuffers(int bufferSize)
+		void Circle::generateBuffers(unsigned int bytesToRead)
 		{
 			glGenVertexArrays(1, &VAO);
 			glGenBuffers(1, &VBO);
@@ -59,10 +59,10 @@ namespace PixelGL
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, getVerticesSize(), m_vertices.data(), GL_STATIC_DRAW);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bytesToRead * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(0);
 
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, bytesToRead * sizeof(float), (void*)(3 * sizeof(float)));
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);

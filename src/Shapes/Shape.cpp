@@ -2,6 +2,7 @@
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #include "../Color/Color.h"
 #include "../DeltaTime/DeltaTime.h"
 #include "Shape.h"
@@ -22,6 +23,7 @@ namespace PixelGL
 			m_translation = glm::translate(mat4{ 1.0f }, center);
 			m_scale = mat4{ 1.0f };
 			updateTransform();
+			std::cout << "Shape loaded at address: " << this << " with selected texture: " << m_selectedTexture << std::endl;
 		}
 
 		Shape::~Shape()
@@ -89,7 +91,9 @@ namespace PixelGL
 		{
 			if (!m_textures.empty())
 			{
+				std::cout << "applying texture for shape at address: " << this << std::endl;
 				(m_selectedTexture < m_textures.size() - 1) ? m_selectedTexture++ : m_selectedTexture = 0;
+				std::cout << "applied texture: " << m_selectedTexture << std::endl;
 			}
 		}
 
@@ -97,7 +101,9 @@ namespace PixelGL
 		{
 			if (textureIdx < m_textures.size())
 			{
+				std::cout << "applying texture for shape at address: " << this << std::endl;
 				m_selectedTexture = textureIdx;
+				std::cout << "applied texture: " << m_selectedTexture << std::endl;
 			}
 		}
 

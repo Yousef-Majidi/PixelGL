@@ -26,7 +26,7 @@ namespace PixelGL
 
 			void generateVertices(glm::vec3 center, float size, glm::vec3 color) override;
 			void generateVertices(glm::vec3 center, float height, float width, glm::vec3 color);
-			void generateBuffers(int bufferSize) override;
+			void generateBuffers(unsigned int bytesToRead) override;
 			void generateIndices();
 			void applyTexture(const char* texture, int textureIdx);
 			const unsigned int getIndicesSize() const;
