@@ -22,6 +22,8 @@ namespace PixelGL
 		/************DEBUG*************/
 		static bool NEXT_TEXTURE = false;
 		static bool RESET_TEXTURE = false;
+		static float BLEND = false;
+		static unsigned int RAND = 0;
 		/************DEBUG*************/
 
 		using
@@ -166,6 +168,27 @@ namespace PixelGL
 				}
 				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
 				glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "hasTexture"), shape->hasTextures());
+				if (shape->hasTextures())
+				{
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "texture1"), 0);
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "texture2"), 1);
+				}
+				if (BLEND)
+				{
+					if (shape == m_uniqueShapes.at(RAND))
+					{
+						glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), true);
+					}
+					else
+					{
+						glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), false);
+					}
+				}
+				else
+				{
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), false);
+				}
+
 				shape->render();
 			}
 
@@ -213,6 +236,19 @@ namespace PixelGL
 			{
 				RESET_TEXTURE = true;
 				std::cout << "Y key pressed" << std::endl;
+			}
+			if ((key == GLFW_KEY_P) && action == GLFW_PRESS)
+			{
+				BLEND = !BLEND;
+				if (BLEND)
+				{
+					RAND = rand() % 4;
+					std::cout << "Blending shape at index: " << RAND << std::endl;
+				}
+				else
+				{
+					std::cout << "Reseting blending" << std::endl;
+				}
 			}
 		}
 

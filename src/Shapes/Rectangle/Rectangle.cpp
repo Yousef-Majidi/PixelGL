@@ -51,10 +51,12 @@ namespace PixelGL
 
 		void Rectangle::render() const
 		{
-			glActiveTexture(GL_TEXTURE0);
 			if (hasTextures())
 			{
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, m_textures.at(m_selectedTexture));
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, m_textures.at(m_selectedTexture + 1));
 			}
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
