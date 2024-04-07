@@ -18,7 +18,7 @@ namespace PixelGL
 		{
 		public:
 			App() {};
-			App(unsigned int, unsigned int, const char*, const char*);
+			App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath);
 			~App();
 			void run();
 

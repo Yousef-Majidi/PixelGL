@@ -56,7 +56,16 @@ namespace PixelGL
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, m_textures.at(m_selectedTexture));
 				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, m_textures.at(m_selectedTexture + 1));
+				int nextTexture = 0;
+				if (m_selectedTexture == m_textures.size() - 1)
+				{
+					int nextTexture = 0;
+				}
+				else
+				{
+					nextTexture = m_selectedTexture + 1;
+				}
+				glBindTexture(GL_TEXTURE_2D, m_textures.at(nextTexture));
 			}
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

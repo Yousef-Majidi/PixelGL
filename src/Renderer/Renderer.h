@@ -17,7 +17,7 @@ namespace PixelGL
 			PixelGL::Shader::Shader getShader() const;
 			void initializeGLFW();
 			void initializeGLAD();
-			void initializeShader(const char*, const char*);
+			void initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath = nullptr);
 
 		private:
 			PixelGL::Shader::Shader m_shader{};

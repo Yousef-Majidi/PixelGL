@@ -37,14 +37,14 @@ namespace PixelGL
 			PixelGL::Shape::Shape,
 			PixelGL::Color::Color;
 
-		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath)
+		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath)
 		{
 			m_renderer = std::make_unique<Renderer>();
 			m_renderer->initializeGLFW();
 			createWindow(width, height);
 			setCallbacks();
 			m_renderer->initializeGLAD();
-			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath);
+			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath, geometryShaderPath);
 			initializeShapes();
 			initializeCamera();
 		}
