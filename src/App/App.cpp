@@ -11,6 +11,7 @@
 #include "../DeltaTime/DeltaTime.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Circle/Circle.h"
+#include "../Shapes/Cube/Cube.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shapes/Shape.h"
 #include "App.h"
@@ -34,6 +35,7 @@ namespace PixelGL
 			PixelGL::Camera::PerspectiveCamera,
 			PixelGL::Renderer::Renderer,
 			PixelGL::Shape::Rectangle,
+			PixelGL::Shape::Cube,
 			PixelGL::Shape::Shape,
 			PixelGL::Color::Color;
 
@@ -102,11 +104,13 @@ namespace PixelGL
 			Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.5f, 1.0f, blue, texturePaths);
 			Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.5f, 1.0f, red, texturePaths);
 			Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.5f, 1.0f, green, texturePaths);
+			Cube* cube = new Cube(vec3(0.0f, 0.0f, 3.0f), 0.5f, 0.5f, 0.5f, yellow, texturePaths);
 
 			addShape(topRight);
 			addShape(bottomRight);
 			addShape(bottomLeft);
 			addShape(topLeft);
+			addShape(cube);
 		}
 
 		void App::initializeCamera()

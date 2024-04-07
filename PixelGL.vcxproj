@@ -143,12 +143,14 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Shapes\Circle\Circle.cpp" />
+    <ClCompile Include="src\Shapes\Cube\Cube.cpp" />
     <ClCompile Include="src\Shapes\Rectangle\Rectangle.cpp" />
     <ClCompile Include="src\Shapes\Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="src\Shader\shader.fs" />
+    <None Include="src\Shader\shader.gs" />
     <None Include="src\Shader\shader.vs" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +163,7 @@
     <ClInclude Include="src\Shader\shaderinit.h" />
     <ClInclude Include="src\Shader\stb_image.h" />
     <ClInclude Include="src\Shapes\Circle\Circle.h" />
+    <ClInclude Include="src\Shapes\Cube\Cube.h" />
     <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Shapes\Shape.h" />
   </ItemGroup>

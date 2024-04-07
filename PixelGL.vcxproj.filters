@@ -48,6 +48,9 @@
     <ClCompile Include="src\DeltaTime\DeltaTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shapes\Cube\Cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -55,6 +58,9 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="src\Shader\shader.vs">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="src\Shader\shader.gs">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
@@ -90,6 +96,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DeltaTime\DeltaTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shapes\Cube\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
