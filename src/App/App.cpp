@@ -100,17 +100,17 @@ namespace PixelGL
 
 			initializer_list<const char*> texturePaths = { "assets/box.png", "assets/smilie.png" };
 
-			Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.50f, 1.0f, yellow, texturePaths);
-			Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.5f, 1.0f, blue, texturePaths);
-			Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.5f, 1.0f, red, texturePaths);
-			Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.5f, 1.0f, green, texturePaths);
-			Cube* cube = new Cube(vec3(0.0f, 0.0f, 3.0f), 0.5f, 0.5f, 0.5f, yellow, texturePaths);
+			Cube* plane = new Cube(vec3(0.0f, 0.0f, 0.0f), 10.0f, 0.1f, 10.0f, green);
+			Cube* bottomRightCube = new Cube(vec3(2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, yellow, texturePaths);
+			Cube* bottomLeftCube = new Cube(vec3(-2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, red, texturePaths);
+			Cube* topRightCube = new Cube(vec3(2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, green, texturePaths);
+			Cube* topLeftCube = new Cube(vec3(-2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, yellow, texturePaths);
 
-			addShape(topRight);
-			addShape(bottomRight);
-			addShape(bottomLeft);
-			addShape(topLeft);
-			addShape(cube);
+			addShape(bottomRightCube);
+			addShape(bottomLeftCube);
+			addShape(topLeftCube);
+			addShape(topRightCube);
+			addShape(plane);
 		}
 
 		void App::initializeCamera()
@@ -122,7 +122,7 @@ namespace PixelGL
 			glfwGetFramebufferSize(m_window, &width, &heigth);
 			float aspectRatio = (float)width / (float)heigth;
 			mat4 projection(1.0f);
-			vec3 cameraPos(0.0f, 0.0f, 5.0f);
+			vec3 cameraPos(0.0f, 2.0f, 10.0f);
 			vec3 cameraFront(0.0f, 0.0f, -1.0f);
 			vec3 cameraUp(0.0f, 1.0f, 0.0f);
 			float fov = 45.0f;
@@ -254,7 +254,7 @@ namespace PixelGL
 				BLEND = !BLEND;
 				if (BLEND)
 				{
-					RAND = rand() % 5;
+					RAND = rand() % 4;
 					std::cout << "Blending shape at index: " << RAND << std::endl;
 				}
 				else

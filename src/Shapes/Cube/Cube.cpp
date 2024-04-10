@@ -45,6 +45,7 @@ namespace PixelGL
 		void PixelGL::Shape::Cube::render() const
 		{
 			glEnable(GL_DEPTH_TEST);
+			// glDepthFunc(GL_LESS);
 			if (hasTextures())
 			{
 				glActiveTexture(GL_TEXTURE0);
@@ -60,6 +61,17 @@ namespace PixelGL
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+
+			// TODO: create a separate vbo and ebo for the edges and use GL_LINES to draw them separetly
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Enable wireframe mode
+			glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Disable wireframe mode
+
+			// face culling
+			// TODO: refactor into a separate function and the ability to set different parameters
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			glFrontFace(GL_CW);
 		}
 
 		void Cube::generateVertices(glm::vec3 center, float size, glm::vec3 color)
@@ -111,14 +123,36 @@ namespace PixelGL
 			}
 			m_vertices =
 			{
-				center.x + halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,	// front top right
-				center.x + halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,	// front bottom right
-				center.x - halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,	// front bottom left
-				center.x - halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,	// front top left
-				center.x + halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,	// back top right
-				center.x + halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,	// back bottom right
-				center.x - halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,	// back bottom left
-				center.x - halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z	// back top left
+				// Front face
+				center.x - halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				// Back face
+				center.x - halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				// Top face
+				center.x - halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				// Bottom face
+				center.x - halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				// Right face
+				center.x + halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x + halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				// Left face
+				center.x - halfWidth, center.y - halfHeight, center.z - halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y - halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y + halfHeight, center.z + halfDepth, color.x, color.y, color.z,
+				center.x - halfWidth, center.y + halfHeight, center.z - halfDepth, color.x, color.y, color.z,
 			};
 		}
 
@@ -165,12 +199,6 @@ namespace PixelGL
 				12, 13, 14, 12, 14, 15,	// Bottom
 				16, 17, 18, 16, 18, 19,	// Right
 				20, 21, 22, 20, 22, 23	// Left
-				//0, 1, 2, 2, 3, 0,	// front
-				//4, 5, 6, 6, 7, 4,	// back
-				//0, 4, 7, 7, 3, 0,	// top
-				//1, 5, 6, 6, 2, 1,	// bottom
-				//0, 1, 5, 5, 4, 0,	// right
-				//3, 2, 6, 6, 7, 3	// left
 			};
 			m_numVertices = getIndicesSize() / sizeof(unsigned int);
 		}
