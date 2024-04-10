@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include <GLFW/glfw3.h>
+#include <glm/ext/matrix_float4x4.hpp>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 

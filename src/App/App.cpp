@@ -207,11 +207,11 @@ namespace PixelGL
 			{
 				if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
 				{
-					perspectiveCamera->transform(vec3(0.0f, 1.0f, 0.0f));
+					perspectiveCamera->transform(vec3(0.0f, 0.0f, 1.0f));
 				}
 				if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
 				{
-					perspectiveCamera->transform(vec3(0.0f, -1.0f, 0.0f));
+					perspectiveCamera->transform(vec3(0.0f, 0.0f, -1.0f));
 				}
 				if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
 				{
@@ -220,6 +220,14 @@ namespace PixelGL
 				if (glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
 				{
 					perspectiveCamera->transform(vec3(1.0f, 0.0f, 0.0f));
+				}
+				if (glfwGetKey(m_window, GLFW_KEY_E) == GLFW_PRESS)
+				{
+					perspectiveCamera->transform(vec3(0.0f, 1.0f, 0.0f));
+				}
+				if (glfwGetKey(m_window, GLFW_KEY_Q) == GLFW_PRESS)
+				{
+					perspectiveCamera->transform(vec3(0.0f, -1.0f, 0.0f));
 				}
 			}
 		}
@@ -246,7 +254,7 @@ namespace PixelGL
 				BLEND = !BLEND;
 				if (BLEND)
 				{
-					RAND = rand() % 4;
+					RAND = rand() % 5;
 					std::cout << "Blending shape at index: " << RAND << std::endl;
 				}
 				else
@@ -285,12 +293,12 @@ namespace PixelGL
 
 		void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 		{
-			App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+			/*App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 			PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
 			if (perspectiveCamera)
 			{
 				perspectiveCamera->zoom((float)yoffset);
-			}
+			}*/
 		}
 
 		// glfw: viewport to window adjustment
