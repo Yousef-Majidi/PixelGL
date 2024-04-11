@@ -146,12 +146,15 @@
     <ClCompile Include="src\Shapes\Cube\Cube.cpp" />
     <ClCompile Include="src\Shapes\Rectangle\Rectangle.cpp" />
     <ClCompile Include="src\Shapes\Shape.cpp" />
+    <ClCompile Include="src\Skybox\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="src\Shader\shader.fs" />
     <None Include="src\Shader\shader.gs" />
     <None Include="src\Shader\shader.vs" />
+    <None Include="src\Shader\skyboxShader.fs" />
+    <None Include="src\Shader\skyboxShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\App.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="src\Shapes\Cube\Cube.h" />
     <ClInclude Include="src\Shapes\Rectangle\Rectangle.h" />
     <ClInclude Include="src\Shapes\Shape.h" />
+    <ClInclude Include="src\Skybox\Skybox.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

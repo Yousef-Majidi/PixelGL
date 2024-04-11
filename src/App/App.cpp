@@ -14,6 +14,7 @@
 #include "../Shapes/Cube/Cube.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shapes/Shape.h"
+#include "../Skybox/Skybox.h"
 #include "App.h"
 
 namespace PixelGL
@@ -37,7 +38,8 @@ namespace PixelGL
 			PixelGL::Shape::Rectangle,
 			PixelGL::Shape::Cube,
 			PixelGL::Shape::Shape,
-			PixelGL::Color::Color;
+			PixelGL::Color::Color,
+			PixelGL::Skybox::Skybox;
 
 		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath)
 		{
@@ -49,6 +51,7 @@ namespace PixelGL
 			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath, geometryShaderPath);
 			initializeShapes();
 			initializeCamera();
+			initializeSkybox();
 		}
 
 		App::~App()
@@ -62,7 +65,7 @@ namespace PixelGL
 
 		void App::run()
 		{
-			gameLoop();
+			update();
 		}
 
 		void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
@@ -86,6 +89,24 @@ namespace PixelGL
 			glfwSetCursorPosCallback(m_window, cursorPosCallback);
 			glfwSetScrollCallback(m_window, scrollCallback);
 			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+		}
+
+		void App::initializeSkybox()
+		{
+			/**************************************************/
+			/*****************ADD SKYBOX HERE******************/
+			/**************************************************/
+			const char* vertexPath = "src/Shader/skyboxShader.vs";
+			const char* fragmentPath = "src/Shader/skyboxShader.fs";
+			initializer_list<const char*> faces = {
+				"assets/skybox/right.jpg",
+				"assets/skybox/left.jpg",
+				"assets/skybox/top.jpg",
+				"assets/skybox/bottom.jpg",
+				"assets/skybox/front.jpg",
+				"assets/skybox/back.jpg"
+			};
+			m_skybox = Skybox(vertexPath, fragmentPath, faces);
 		}
 
 		void App::initializeShapes()
@@ -135,7 +156,7 @@ namespace PixelGL
 			m_uniqueShapes.push_back(unique_ptr<Shape>(shape));
 		}
 
-		void App::gameLoop()
+		void App::update()
 		{
 			while (!glfwWindowShouldClose(m_window))
 			{
@@ -152,6 +173,9 @@ namespace PixelGL
 			DeltaTime::getInstance().update();
 			processKeyboardInput();
 			m_camera->update();
+
+			m_skybox.render(m_camera->getView(), m_camera->getProjection());
+
 			m_renderer->getShader().use();
 			m_renderer->getShader().setMat4("view", m_camera->getView());
 			m_renderer->getShader().setMat4("projection", m_camera->getProjection());
@@ -192,10 +216,8 @@ namespace PixelGL
 				{
 					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), false);
 				}
-
 				shape->render();
 			}
-
 			NEXT_TEXTURE = false;
 			RESET_TEXTURE = false;
 		}
@@ -293,12 +315,14 @@ namespace PixelGL
 
 		void App::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 		{
-			/*App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+			App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 			PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
 			if (perspectiveCamera)
 			{
-				perspectiveCamera->zoom((float)yoffset);
-			}*/
+				float speed = perspectiveCamera->getSpeed();
+				speed += static_cast<float>(yoffset);
+				perspectiveCamera->setSpeed(speed);
+			}
 		}
 
 		// glfw: viewport to window adjustment

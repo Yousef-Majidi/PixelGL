@@ -69,9 +69,9 @@ namespace PixelGL
 
 			// face culling
 			// TODO: refactor into a separate function and the ability to set different parameters
-			glEnable(GL_CULL_FACE);
+			/*glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
-			glFrontFace(GL_CW);
+			glFrontFace(GL_CW);*/
 		}
 
 		void Cube::generateVertices(glm::vec3 center, float size, glm::vec3 color)

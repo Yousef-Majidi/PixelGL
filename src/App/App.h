@@ -9,6 +9,7 @@
 #include "../Camera/Camera.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Shape.h"
+#include "../Skybox/Skybox.h"
 
 namespace PixelGL
 {
@@ -27,13 +28,15 @@ namespace PixelGL
 			std::vector<std::unique_ptr<PixelGL::Shape::Shape>> m_uniqueShapes{};
 			std::unique_ptr<PixelGL::Renderer::Renderer> m_renderer;
 			std::unique_ptr<PixelGL::Camera::Camera> m_camera;
+			PixelGL::Skybox::Skybox m_skybox;
 
 			void createWindow(unsigned int, unsigned int);
 			void setCallbacks();
+			void initializeSkybox();
 			void initializeShapes();
 			void initializeCamera();
 			void addShape(PixelGL::Shape::Shape* shape);
-			void gameLoop();
+			void update();
 			void render();
 			void processKeyboardInput();
 

@@ -51,6 +51,9 @@
     <ClCompile Include="src\Shapes\Cube\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Skybox\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -61,6 +64,12 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="src\Shader\shader.gs">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="src\Shader\skyboxShader.vs">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="src\Shader\skyboxShader.fs">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
@@ -99,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Shapes\Cube\Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox\Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

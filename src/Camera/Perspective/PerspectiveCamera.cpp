@@ -63,7 +63,6 @@ namespace PixelGL
 
 		void PerspectiveCamera::transform(vec3 newPos)
 		{
-			//m_cameraPos += m_cameraSpeed * DeltaTime::getInstance().getDeltaTime() * newPos * m_cameraFront;
 			float deltaTime = DeltaTime::getInstance().getDeltaTime();
 			vec3 right = glm::normalize(glm::cross(m_cameraFront, m_cameraUp)); // Calculate the "right" vector
 			m_cameraPos += newPos.z * m_cameraSpeed * deltaTime * m_cameraFront; // Move forward/backward
@@ -71,9 +70,21 @@ namespace PixelGL
 			m_cameraPos.y += newPos.y * m_cameraSpeed * deltaTime; // Move up/down
 		}
 
-		void PerspectiveCamera::setSpeed(int speed)
+		const float PerspectiveCamera::getSpeed() const
 		{
-			m_cameraSpeed = speed;
+			return m_cameraSpeed;
+		}
+
+		void PerspectiveCamera::setSpeed(float speed)
+		{
+			if (speed > 5.0f)
+			{
+				m_cameraSpeed = speed;
+			}
+			else
+			{
+				m_cameraSpeed = 5.0f;
+			}
 		}
 
 		void PerspectiveCamera::processMouseInput(float x, float y)
