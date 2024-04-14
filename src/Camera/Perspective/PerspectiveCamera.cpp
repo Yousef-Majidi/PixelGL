@@ -1,4 +1,5 @@
 #include <GLFW/glfw3.h>
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../DeltaTime/DeltaTime.h"
@@ -62,12 +63,28 @@ namespace PixelGL
 
 		void PerspectiveCamera::transform(vec3 newPos)
 		{
-			m_cameraPos += m_cameraSpeed * DeltaTime::getInstance().getDeltaTime() * newPos;
+			float deltaTime = DeltaTime::getInstance().getDeltaTime();
+			vec3 right = glm::normalize(glm::cross(m_cameraFront, m_cameraUp)); // Calculate the "right" vector
+			m_cameraPos += newPos.z * m_cameraSpeed * deltaTime * m_cameraFront; // Move forward/backward
+			m_cameraPos += newPos.x * m_cameraSpeed * deltaTime * right; // Move right/left
+			m_cameraPos.y += newPos.y * m_cameraSpeed * deltaTime; // Move up/down
 		}
 
-		void PerspectiveCamera::setSpeed(int speed)
+		const float PerspectiveCamera::getSpeed() const
 		{
-			m_cameraSpeed = speed;
+			return m_cameraSpeed;
+		}
+
+		void PerspectiveCamera::setSpeed(float speed)
+		{
+			if (speed > 5.0f)
+			{
+				m_cameraSpeed = speed;
+			}
+			else
+			{
+				m_cameraSpeed = 5.0f;
+			}
 		}
 
 		void PerspectiveCamera::processMouseInput(float x, float y)

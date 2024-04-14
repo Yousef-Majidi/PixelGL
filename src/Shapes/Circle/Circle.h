@@ -19,7 +19,7 @@ namespace PixelGL
 			void render() const override;
 		private:
 			void generateVertices(glm::vec3 center, float size, glm::vec3 color) override;
-			void generateBuffers(int bufferSize) override;
+			void generateBuffers(unsigned int bytesToRead) override;
 		};
 	}
 }

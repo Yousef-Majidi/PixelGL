@@ -9,6 +9,7 @@
 #include "../Camera/Camera.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Shape.h"
+#include "../Skybox/Skybox.h"
 
 namespace PixelGL
 {
@@ -18,7 +19,7 @@ namespace PixelGL
 		{
 		public:
 			App() {};
-			App(unsigned int, unsigned int, const char*, const char*);
+			App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath);
 			~App();
 			void run();
 
@@ -27,19 +28,21 @@ namespace PixelGL
 			std::vector<std::unique_ptr<PixelGL::Shape::Shape>> m_uniqueShapes{};
 			std::unique_ptr<PixelGL::Renderer::Renderer> m_renderer;
 			std::unique_ptr<PixelGL::Camera::Camera> m_camera;
+			PixelGL::Skybox::Skybox m_skybox;
 
 			void createWindow(unsigned int, unsigned int);
 			void setCallbacks();
+			void initializeSkybox();
 			void initializeShapes();
 			void initializeCamera();
 			void addShape(PixelGL::Shape::Shape* shape);
-			void gameLoop();
+			void update();
 			void render();
 			void processKeyboardInput();
 
 			static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 			static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-			static void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+			static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 			static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 			static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 		};

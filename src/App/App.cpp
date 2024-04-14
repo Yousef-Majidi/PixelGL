@@ -11,8 +11,10 @@
 #include "../DeltaTime/DeltaTime.h"
 #include "../Renderer/Renderer.h"
 #include "../Shapes/Circle/Circle.h"
+#include "../Shapes/Cube/Cube.h"
 #include "../Shapes/Rectangle/Rectangle.h"
 #include "../Shapes/Shape.h"
+#include "../Skybox/Skybox.h"
 #include "App.h"
 
 namespace PixelGL
@@ -22,6 +24,8 @@ namespace PixelGL
 		/************DEBUG*************/
 		static bool NEXT_TEXTURE = false;
 		static bool RESET_TEXTURE = false;
+		static float BLEND = false;
+		static unsigned int RAND = 0;
 		/************DEBUG*************/
 
 		using
@@ -32,19 +36,22 @@ namespace PixelGL
 			PixelGL::Camera::PerspectiveCamera,
 			PixelGL::Renderer::Renderer,
 			PixelGL::Shape::Rectangle,
+			PixelGL::Shape::Cube,
 			PixelGL::Shape::Shape,
-			PixelGL::Color::Color;
+			PixelGL::Color::Color,
+			PixelGL::Skybox::Skybox;
 
-		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath)
+		App::App(unsigned int width, unsigned int height, const char* vertextShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath)
 		{
 			m_renderer = std::make_unique<Renderer>();
 			m_renderer->initializeGLFW();
 			createWindow(width, height);
 			setCallbacks();
 			m_renderer->initializeGLAD();
-			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath);
+			m_renderer->initializeShader(vertextShaderPath, fragmentShaderPath, geometryShaderPath);
 			initializeShapes();
 			initializeCamera();
+			initializeSkybox();
 		}
 
 		App::~App()
@@ -58,7 +65,7 @@ namespace PixelGL
 
 		void App::run()
 		{
-			gameLoop();
+			update();
 		}
 
 		void App::createWindow(unsigned int screenWidth, unsigned int screenHeight)
@@ -79,9 +86,27 @@ namespace PixelGL
 		{
 			glfwSetKeyCallback(m_window, keyCallback);
 			glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
-			glfwSetCursorPosCallback(m_window, CursorPosCallback);
+			glfwSetCursorPosCallback(m_window, cursorPosCallback);
 			glfwSetScrollCallback(m_window, scrollCallback);
 			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+		}
+
+		void App::initializeSkybox()
+		{
+			/**************************************************/
+			/*****************ADD SKYBOX HERE******************/
+			/**************************************************/
+			const char* vertexPath = "src/Shader/skyboxShader.vs";
+			const char* fragmentPath = "src/Shader/skyboxShader.fs";
+			initializer_list<const char*> faces = {
+				"assets/skybox/right.jpg",
+				"assets/skybox/left.jpg",
+				"assets/skybox/top.jpg",
+				"assets/skybox/bottom.jpg",
+				"assets/skybox/front.jpg",
+				"assets/skybox/back.jpg"
+			};
+			m_skybox = Skybox(vertexPath, fragmentPath, faces);
 		}
 
 		void App::initializeShapes()
@@ -96,15 +121,17 @@ namespace PixelGL
 
 			initializer_list<const char*> texturePaths = { "assets/box.png", "assets/smilie.png" };
 
-			Rectangle* topRight = new Rectangle(vec3(0.85f, 0.85f, 0.0f), 0.50f, 1.0f, yellow, texturePaths);
-			Rectangle* bottomRight = new Rectangle(vec3(0.85f, -0.85f, 0.0f), 0.5f, 1.0f, blue, texturePaths);
-			Rectangle* bottomLeft = new Rectangle(vec3(-0.85f, -0.85f, 0.0f), 0.5f, 1.0f, red, texturePaths);
-			Rectangle* topLeft = new Rectangle(vec3(-0.85f, 0.85f, 0.0f), 0.5f, 1.0f, green, texturePaths);
+			Cube* plane = new Cube(vec3(0.0f, 0.0f, 0.0f), 10.0f, 0.1f, 10.0f, green);
+			Cube* bottomRightCube = new Cube(vec3(2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, yellow, texturePaths);
+			Cube* bottomLeftCube = new Cube(vec3(-2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, red, texturePaths);
+			Cube* topRightCube = new Cube(vec3(2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, green, texturePaths);
+			Cube* topLeftCube = new Cube(vec3(-2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, blue, texturePaths);
 
-			addShape(topRight);
-			addShape(bottomRight);
-			addShape(bottomLeft);
-			addShape(topLeft);
+			addShape(bottomRightCube);
+			addShape(bottomLeftCube);
+			addShape(topLeftCube);
+			addShape(topRightCube);
+			addShape(plane);
 		}
 
 		void App::initializeCamera()
@@ -116,7 +143,7 @@ namespace PixelGL
 			glfwGetFramebufferSize(m_window, &width, &heigth);
 			float aspectRatio = (float)width / (float)heigth;
 			mat4 projection(1.0f);
-			vec3 cameraPos(0.0f, 0.0f, 5.0f);
+			vec3 cameraPos(0.0f, 2.0f, 10.0f);
 			vec3 cameraFront(0.0f, 0.0f, -1.0f);
 			vec3 cameraUp(0.0f, 1.0f, 0.0f);
 			float fov = 45.0f;
@@ -129,7 +156,7 @@ namespace PixelGL
 			m_uniqueShapes.push_back(unique_ptr<Shape>(shape));
 		}
 
-		void App::gameLoop()
+		void App::update()
 		{
 			while (!glfwWindowShouldClose(m_window))
 			{
@@ -146,6 +173,9 @@ namespace PixelGL
 			DeltaTime::getInstance().update();
 			processKeyboardInput();
 			m_camera->update();
+
+			m_skybox.render(m_camera->getView(), m_camera->getProjection());
+
 			m_renderer->getShader().use();
 			m_renderer->getShader().setMat4("view", m_camera->getView());
 			m_renderer->getShader().setMat4("projection", m_camera->getProjection());
@@ -166,12 +196,30 @@ namespace PixelGL
 				}
 				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(shape->getTransform()));
 				glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "hasTexture"), shape->hasTextures());
+				if (shape->hasTextures())
+				{
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "texture1"), 0);
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "texture2"), 1);
+				}
+				if (BLEND)
+				{
+					if (shape == m_uniqueShapes.at(RAND))
+					{
+						glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), true);
+					}
+					else
+					{
+						glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), false);
+					}
+				}
+				else
+				{
+					glUniform1i(glGetUniformLocation(m_renderer->getShader().ID, "blend"), false);
+				}
 				shape->render();
 			}
-
 			NEXT_TEXTURE = false;
 			RESET_TEXTURE = false;
-			std::cout << "delta time: " << DeltaTime::getInstance().getDeltaTime() << std::endl;
 		}
 
 		void App::processKeyboardInput()
@@ -181,11 +229,11 @@ namespace PixelGL
 			{
 				if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
 				{
-					perspectiveCamera->transform(vec3(0.0f, 1.0f, 0.0f));
+					perspectiveCamera->transform(vec3(0.0f, 0.0f, 1.0f));
 				}
 				if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
 				{
-					perspectiveCamera->transform(vec3(0.0f, -1.0f, 0.0f));
+					perspectiveCamera->transform(vec3(0.0f, 0.0f, -1.0f));
 				}
 				if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
 				{
@@ -194,6 +242,14 @@ namespace PixelGL
 				if (glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
 				{
 					perspectiveCamera->transform(vec3(1.0f, 0.0f, 0.0f));
+				}
+				if (glfwGetKey(m_window, GLFW_KEY_E) == GLFW_PRESS)
+				{
+					perspectiveCamera->transform(vec3(0.0f, 1.0f, 0.0f));
+				}
+				if (glfwGetKey(m_window, GLFW_KEY_Q) == GLFW_PRESS)
+				{
+					perspectiveCamera->transform(vec3(0.0f, -1.0f, 0.0f));
 				}
 			}
 		}
@@ -208,12 +264,25 @@ namespace PixelGL
 			if ((key == GLFW_KEY_T) && action == GLFW_PRESS)
 			{
 				NEXT_TEXTURE = true;
-				std::cout << "Applying next texture" << std::endl;
+				std::cout << "T key pressed" << std::endl;
 			}
 			if ((key == GLFW_KEY_Y) && action == GLFW_PRESS)
 			{
 				RESET_TEXTURE = true;
-				std::cout << "Resetting texture" << std::endl;
+				std::cout << "Y key pressed" << std::endl;
+			}
+			if ((key == GLFW_KEY_P) && action == GLFW_PRESS)
+			{
+				BLEND = !BLEND;
+				if (BLEND)
+				{
+					RAND = rand() % 4;
+					std::cout << "Blending shape at index: " << RAND << std::endl;
+				}
+				else
+				{
+					std::cout << "Reseting blending" << std::endl;
+				}
 			}
 		}
 
@@ -234,7 +303,7 @@ namespace PixelGL
 			}
 		}
 
-		void App::CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+		void App::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 		{
 			App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
 			PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
@@ -250,7 +319,9 @@ namespace PixelGL
 			PerspectiveCamera* perspectiveCamera = dynamic_cast<PerspectiveCamera*>(app->m_camera.get());
 			if (perspectiveCamera)
 			{
-				perspectiveCamera->zoom((float)yoffset);
+				float speed = perspectiveCamera->getSpeed();
+				speed += static_cast<float>(yoffset);
+				perspectiveCamera->setSpeed(speed);
 			}
 		}
 

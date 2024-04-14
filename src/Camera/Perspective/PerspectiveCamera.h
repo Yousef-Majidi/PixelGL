@@ -2,6 +2,8 @@
 #define PERSPECTIVE_CAMERA_H
 
 #include <GLFW/glfw3.h>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/glm.hpp>
 #include "../Camera.h"
 
@@ -22,7 +24,8 @@ namespace PixelGL
 			void freeLook(float x, float y);
 			void zoom(float yoffset);
 			void transform(glm::vec3 newPos);
-			void setSpeed(int speed);
+			const float getSpeed() const;
+			void setSpeed(float speed);
 
 		private:
 			glm::vec3 m_cameraPos;
@@ -34,7 +37,7 @@ namespace PixelGL
 			float m_aspectRatio;
 			bool m_freeLook;
 			bool m_firstMouseMovement;
-			int m_cameraSpeed;
+			float m_cameraSpeed;
 
 			void processMouseInput(float x, float y);
 		};

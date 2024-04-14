@@ -52,7 +52,7 @@ namespace PixelGL
 
 			virtual void updateTransform();
 			virtual void generateVertices(glm::vec3 center, float size, glm::vec3 color) = 0;
-			virtual void generateBuffers(int bufferSize) = 0;
+			virtual void generateBuffers(unsigned int bufferSize) = 0;
 			virtual void applyTexture(const char* texture, int textureIdx) = 0;
 		};
 	}

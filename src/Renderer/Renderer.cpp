@@ -40,9 +40,9 @@ namespace PixelGL
 			}
 		}
 
-		void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath)
+		void Renderer::initializeShader(const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath)
 		{
-			m_shader = Shader(vertexShaderPath, fragmentShaderPath);
+			m_shader = Shader(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
 		}
 	}
 }
