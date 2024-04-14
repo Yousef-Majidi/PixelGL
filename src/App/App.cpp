@@ -125,7 +125,7 @@ namespace PixelGL
 			Cube* bottomRightCube = new Cube(vec3(2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, yellow, texturePaths);
 			Cube* bottomLeftCube = new Cube(vec3(-2.0f, 0.25f, 2.0f), 1.0f, 1.0f, 1.0f, red, texturePaths);
 			Cube* topRightCube = new Cube(vec3(2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, green, texturePaths);
-			Cube* topLeftCube = new Cube(vec3(-2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, yellow, texturePaths);
+			Cube* topLeftCube = new Cube(vec3(-2.0f, 0.25f, -2.0f), 1.0f, 1.0f, 1.0f, blue, texturePaths);
 
 			addShape(bottomRightCube);
 			addShape(bottomLeftCube);

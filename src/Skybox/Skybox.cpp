@@ -35,6 +35,7 @@ namespace PixelGL
 
 		void Skybox::render(const mat4& view, const mat4& projection)
 		{
+			glDisable(GL_CULL_FACE);
 			glDepthFunc(GL_LEQUAL);
 			glBindVertexArray(VAO);
 			glActiveTexture(GL_TEXTURE0);

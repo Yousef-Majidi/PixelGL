@@ -44,8 +44,6 @@ namespace PixelGL
 
 		void PixelGL::Shape::Cube::render() const
 		{
-			glEnable(GL_DEPTH_TEST);
-			// glDepthFunc(GL_LESS);
 			if (hasTextures())
 			{
 				glActiveTexture(GL_TEXTURE0);
@@ -61,6 +59,10 @@ namespace PixelGL
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glDrawElements(GL_TRIANGLES, m_numVertices, GL_UNSIGNED_INT, 0);
+
+			glEnable(GL_DEPTH_TEST);
+			//glDepthFunc(GL_EQUAL);
+
 
 			// TODO: create a separate vbo and ebo for the edges and use GL_LINES to draw them separetly
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Enable wireframe mode
@@ -193,8 +195,8 @@ namespace PixelGL
 		{
 			m_indices =
 			{
-				0, 1, 2, 0, 2, 3,	// Front
-				4, 5, 6, 4, 6, 7,	// Back
+				0, 1, 2, 0, 2, 3,		// Front
+				4, 5, 6, 4, 6, 7,		// Back
 				8, 9, 10, 8, 10, 11,	// Top
 				12, 13, 14, 12, 14, 15,	// Bottom
 				16, 17, 18, 16, 18, 19,	// Right
